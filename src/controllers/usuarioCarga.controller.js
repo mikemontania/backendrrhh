@@ -1,4 +1,4 @@
-const { UsuariosCarga } = require('../models'); // Asegúrate de ajustar la ruta al modelo si es necesario
+const { UsuariosCarga } = require('../models/usuarioCarga.model'); // Asegúrate de ajustar la ruta al modelo si es necesario
 
 // Controlador para obtener todos los registros de UsuariosCarga
 const getAllUsuariosCarga = async (req, res) => {

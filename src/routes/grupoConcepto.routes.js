@@ -1,78 +1,22 @@
-const GrupoConcepto = require('../models/grupoConcepto.model');
+const { Router } = require('express');
+const grupoConceptoController = require('../controllers/grupoConcepto.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const grupoConcepto = await GrupoConcepto.findByPk(id);
-    if (grupoConcepto) {
-      res.status(200).json(grupoConcepto);
-    } else {
-      res.status(404).json({ error: 'Grupo de concepto no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar el grupo de concepto por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const gruposConcepto = await GrupoConcepto.findAll();
-    res.status(200).json(gruposConcepto);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar los grupos de concepto' });
-  }
-};
+// Ruta para buscar un Grupo de Concepto por ID
+router.get('/grupoconcepto/:id', validarJWT, grupoConceptoController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion } = req.body;
-    const grupoConcepto = await GrupoConcepto.create({ descripcion });
-    res.status(201).json(grupoConcepto);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el grupo de concepto' });
-  }
-};
+// Ruta para buscar todos los Grupos de Concepto
+router.get('/gruposconcepto', validarJWT, grupoConceptoController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion } = req.body;
-    const grupoConcepto = await GrupoConcepto.findByPk(id);
-    if (grupoConcepto) {
-      await grupoConcepto.update({ descripcion });
-      res.status(200).json(grupoConcepto);
-    } else {
-      res.status(404).json({ error: 'Grupo de concepto no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el grupo de concepto' });
-  }
-};
+// Ruta para crear un nuevo Grupo de Concepto
+router.post('/grupoconcepto', validarJWT, grupoConceptoController.create);
 
-const deleteGrupoConcepto = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const grupoConcepto = await GrupoConcepto.findByPk(id);
-    if (grupoConcepto) {
-      await grupoConcepto.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Grupo de concepto no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el grupo de concepto' });
-  }
-};
+// Ruta para actualizar un Grupo de Concepto por ID
+router.put('/grupoconcepto/:id', validarJWT, grupoConceptoController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteGrupoConcepto,
-};
+// Ruta para eliminar un Grupo de Concepto por ID
+router.delete('/grupoconcepto/:id', validarJWT, grupoConceptoController.deleteGrupoConcepto);
+
+module.exports = router;

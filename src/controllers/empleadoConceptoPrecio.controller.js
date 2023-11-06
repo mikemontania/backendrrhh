@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const EmpleadoConceptosPrecio = require('../models/empleadoConceptosPrecio.model');
+const EmpleadoConceptosPrecio = require('../models/empleadoConceptoPrecio.model');
 
 const findById = async (req, res) => {
   try {

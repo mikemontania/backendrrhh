@@ -1,78 +1,21 @@
-const Localidad = require('../models/localidad.model');
+const { Router } = require('express');
+const localidadController = require('../controllers/localidad.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const localidad = await Localidad.findByPk(id);
-    if (localidad) {
-      res.status(200).json(localidad);
-    } else {
-      res.status(404).json({ error: 'Localidad no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar localidad por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const localidades = await Localidad.findAll();
-    res.status(200).json(localidades);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar todas las localidades' });
-  }
-};
+// Ruta para buscar todas las localidades
+router.get('/localidades', localidadController.findAll);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion } = req.body;
-    const localidad = await Localidad.create({ descripcion });
-    res.status(201).json(localidad);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la localidad' });
-  }
-};
+// Ruta para buscar una localidad por ID
+router.get('/localidades/:id', localidadController.findById);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion } = req.body;
-    const localidad = await Localidad.findByPk(id);
-    if (localidad) {
-      await localidad.update({ descripcion });
-      res.status(200).json(localidad);
-    } else {
-      res.status(404).json({ error: 'Localidad no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la localidad' });
-  }
-};
+// Ruta para crear una nueva localidad
+router.post('/localidades', localidadController.create);
 
-const deleteLocalidad = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const localidad = await Localidad.findByPk(id);
-    if (localidad) {
-      await localidad.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Localidad no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la localidad' });
-  }
-};
+// Ruta para actualizar una localidad por ID
+router.put('/localidades/:id', localidadController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteLocalidad,
-};
+// Ruta para eliminar una localidad por ID
+router.delete('/localidades/:id', localidadController.deleteLocalidad);
+
+module.exports = router;

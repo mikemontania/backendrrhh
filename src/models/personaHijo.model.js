@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
-const { Empleado } = require('./empleado.model');
-const { EstadoCivil } = require('./estadoCivil.model');
+const Empleado = require('./empleado.model');
+const EstadoCivil = require('./estadoCivil.model');
 const PersonasHijos = sequelize.define('PersonasHijos', {
   id: {
     type: DataTypes.INTEGER,
@@ -24,7 +24,7 @@ const PersonasHijos = sequelize.define('PersonasHijos', {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  
+
   empleadosId: {
     type: DataTypes.INTEGER,
     allowNull: true,

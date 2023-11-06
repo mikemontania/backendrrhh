@@ -1,18 +1,10 @@
-const { TipoEmpleado } = require('../models'); // Asegúrate de importar el modelo TipoEmpleado
+const express = require('express');
+const router = express.Router();
+const tipoEmpleadoController = require('../controllers/tipoEmpleado.controller');
 
-// Controlador para buscar todos los tipos de empleados
-const findAllTipoEmpleados = async (req, res) => {
-  try {
-    const tipoEmpleados = await TipoEmpleado.findAll();
-    res.json(tipoEmpleados);
-  } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar los tipos de empleados' });
-  }
-};
+// Rutas para los tipos de empleados
+router.get('/tipo-empleados/:id', tipoEmpleadoController.findTipoEmpleadoById);
+router.put('/tipo-empleados/:id', tipoEmpleadoController.updateTipoEmpleado);
+router.delete('/tipo-empleados/:id', tipoEmpleadoController.deleteTipoEmpleado);
 
-// Otros controladores relacionados con TipoEmpleado se pueden agregar aquí, como crear, actualizar o eliminar registros.
-
-module.exports = {
-  findAllTipoEmpleados,
-  // Agrega otros controladores aquí según sea necesario
-};
+module.exports = router;

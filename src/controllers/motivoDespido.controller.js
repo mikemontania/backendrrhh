@@ -1,4 +1,4 @@
-const MotivosDespidos = require('../models/motivosDespidos.model');
+const MotivosDespidos = require('../models/motivoDespido.model');
 
 const findById = async (req, res) => {
   try {

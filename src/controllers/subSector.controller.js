@@ -1,25 +1,25 @@
-const   Sector  = require('../models/sector.model'); // Asegúrate de importar el modelo SubSector y Sector
-const   SubSector  = require('../models/subSector.model'); // Asegúrate de importar el modelo SubSector y Sector
- 
-// Controlador para buscar todas las subselecciones
-const findAllSubSelecciones = async (req, res) => {
+const Sector = require('../models/sector.model'); // Asegúrate de importar el modelo SubSector y Sector
+const SubSector = require('../models/subSector.model'); // Asegúrate de importar el modelo SubSector y Sector
+
+// Controlador para buscar todas las SubSector
+const findAllSubSector = async (req, res) => {
   try {
-    const subselecciones = await SubSector.findAll();
-    res.status(200).json(subselecciones);
+    const SubSector = await SubSector.findAll();
+    res.status(200).json(SubSector);
   } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar las subselecciones.' });
+    res.status(500).json({ error: 'No se pudieron recuperar las SubSector.' });
   }
 };
 
 // Controlador para buscar una subselección por su ID
-const findSubSeleccionById = async (req, res) => {
+const findSubSectorById = async (req, res) => {
   const { id } = req.params;
   try {
-    const subseleccion = await SubSector.findByPk(id);
-    if (!subseleccion) {
+    const subSector = await SubSector.findByPk(id);
+    if (!subSector) {
       res.status(404).json({ error: 'Subselección no encontrada.' });
     } else {
-      res.status(200).json(subseleccion);
+      res.status(200).json(subSector);
     }
   } catch (error) {
     res.status(500).json({ error: 'No se pudo recuperar la subselección.' });
@@ -27,15 +27,15 @@ const findSubSeleccionById = async (req, res) => {
 };
 
 // Controlador para crear una nueva subselección
-const createSubSeleccion = async (req, res) => {
+const create = async (req, res) => {
   const { descripcion, sectorId } = req.body;
   try {
     const sector = await Sector.findByPk(sectorId);
     if (!sector) {
       res.status(404).json({ error: 'Sector no encontrado.' });
     } else {
-      const nuevaSubSeleccion = await SubSector.create({ descripcion, sectorId });
-      res.status(201).json(nuevaSubSeleccion);
+      const nuevaSubSector = await SubSector.create({ descripcion, sectorId });
+      res.status(201).json(nuevaSubSector);
     }
   } catch (error) {
     res.status(500).json({ error: 'No se pudo crear la subselección.' });
@@ -43,41 +43,41 @@ const createSubSeleccion = async (req, res) => {
 };
 
 // Controlador para actualizar una subselección existente
-const updateSubSeleccion = async (req, res) => {
+const update = async (req, res) => {
   const { id } = req.params;
   const { descripcion } = req.body;
   try {
-    const subseleccion = await SubSector.findByPk(id);
-    if (!subseleccion) {
+    const subSector = await SubSector.findByPk(id);
+    if (!subSector) {
       res.status(404).json({ error: 'Subselección no encontrada.' });
     } else {
-      subseleccion.descripcion = descripcion;
-      await subseleccion.save();
-      res.status(200).json(subseleccion);
+      subSector.descripcion = descripcion;
+      await subSector.save();
+      res.status(200).json(subSector);
     }
   } catch (error) {
     res.status(500).json({ error: 'No se pudo actualizar la subselección.' });
   }
 };
 
-// Controlador para buscar todas las subselecciones de un sector
+// Controlador para buscar todas las SubSector de un sector
 const findAllBySector = async (req, res) => {
   const { sectorId } = req.params;
   try {
-    const subselecciones = await SubSector.findAll({
+    const SubSector = await SubSector.findAll({
       where: { sectorId },
       include: [{ model: Sector, as: 'sector' }],
     });
-    res.status(200).json(subselecciones);
+    res.status(200).json(SubSector);
   } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar las subselecciones del sector.' });
+    res.status(500).json({ error: 'No se pudieron recuperar las SubSector del sector.' });
   }
 };
 
 module.exports = {
-  findAllSubSelecciones,
-  findSubSeleccionById,
-  createSubSeleccion,
-  updateSubSeleccion,
+  findAllSubSector,
+  findSubSectorById,
+  create,
+  update,
   findAllBySector,
 };

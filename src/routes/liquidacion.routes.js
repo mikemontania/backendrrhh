@@ -1,162 +1,21 @@
-const LiquidacionCab = require('../models/liquidacionCab.model');
+const { Router } = require('express');
+const liquidacionController = require('../controllers/liquidacion.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const liquidacion = await LiquidacionCab.findByPk(id);
-    if (liquidacion) {
-      res.status(200).json(liquidacion);
-    } else {
-      res.status(404).json({ error: 'Liquidación no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar liquidación por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const liquidaciones = await LiquidacionCab.findAll();
-    res.status(200).json(liquidaciones);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar las liquidaciones' });
-  }
-};
+// Ruta para buscar todas las liquidaciones
+router.get('/liquidaciones', liquidacionController.findAll);
 
-const create = async (req, res) => {
-  try {
-    const {
-      empleadosId,
-      sucursalesId,
-      empresasId,
-      fecha,
-      fechaDesde,
-      fechaHasta,
-      montoTotal,
-      sectorId,
-      subSectorId,
-      usuario,
-      anulado,
-      fechaAnulacion,
-      mes,
-      anho,
-      areaPagoId,
-      cerrado,
-      esPrestadorServicio,
-      nroFactura,
-      primerPago,
-      segundoPago,
-    } = req.body;
-    const liquidacion = await LiquidacionCab.create({
-      empleadosId,
-      sucursalesId,
-      empresasId,
-      fecha,
-      fechaDesde,
-      fechaHasta,
-      montoTotal,
-      sectorId,
-      subSectorId,
-      usuario,
-      anulado,
-      fechaAnulacion,
-      mes,
-      anho,
-      areaPagoId,
-      cerrado,
-      esPrestadorServicio,
-      nroFactura,
-      primerPago,
-      segundoPago,
-    });
-    res.status(201).json(liquidacion);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la liquidación' });
-  }
-};
+// Ruta para buscar una liquidación por ID
+router.get('/liquidaciones/:id', liquidacionController.findById);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      empleadosId,
-      sucursalesId,
-      empresasId,
-      fecha,
-      fechaDesde,
-      fechaHasta,
-      montoTotal,
-      sectorId,
-      subSectorId,
-      usuario,
-      anulado,
-      fechaAnulacion,
-      mes,
-      anho,
-      areaPagoId,
-      cerrado,
-      esPrestadorServicio,
-      nroFactura,
-      primerPago,
-      segundoPago,
-    } = req.body;
-    const liquidacion = await LiquidacionCab.findByPk(id);
-    if (liquidacion) {
-      await liquidacion.update({
-        empleadosId,
-        sucursalesId,
-        empresasId,
-        fecha,
-        fechaDesde,
-        fechaHasta,
-        montoTotal,
-        sectorId,
-        subSectorId,
-        usuario,
-        anulado,
-        fechaAnulacion,
-        mes,
-        anho,
-        areaPagoId,
-        cerrado,
-        esPrestadorServicio,
-        nroFactura,
-        primerPago,
-        segundoPago,
-      });
-      res.status(200).json(liquidacion);
-    } else {
-      res.status(404).json({ error: 'Liquidación no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la liquidación' });
-  }
-};
+// Ruta para crear una nueva liquidación
+router.post('/liquidaciones', liquidacionController.create);
 
-const deleteLiquidacion = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const liquidacion = await LiquidacionCab.findByPk(id);
-    if (liquidacion) {
-      await liquidacion.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Liquidación no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la liquidación' });
-  }
-};
+// Ruta para actualizar una liquidación por ID
+router.put('/liquidaciones/:id', liquidacionController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteLiquidacion,
-};
+// Ruta para eliminar una liquidación por ID
+router.delete('/liquidaciones/:id', liquidacionController.deleteLiquidacion);
+
+module.exports = router;

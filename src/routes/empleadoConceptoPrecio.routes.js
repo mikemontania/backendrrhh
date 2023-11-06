@@ -1,92 +1,22 @@
-const { Op } = require('sequelize');
-const EmpleadoConceptosPrecio = require('../models/empleadoConceptosPrecio.model');
+const { Router } = require('express');
+const empleadoConceptosPrecioController = require('../controllers/empleadoConceptoPrecio.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleadoConceptoPrecio = await EmpleadoConceptosPrecio.findByPk(id);
-    if (empleadoConceptoPrecio) {
-      res.status(200).json(empleadoConceptoPrecio);
-    } else {
-      res.status(404).json({ error: 'EmpleadoConceptoPrecio no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar el EmpleadoConceptoPrecio por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const empleadoConceptosPrecios = await EmpleadoConceptosPrecio.findAll();
-    res.status(200).json(empleadoConceptosPrecios);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar EmpleadoConceptosPrecios' });
-  }
-};
+// Ruta para buscar un EmpleadoConceptosPrecio por ID
+router.get('/empleadoConceptosPrecio/:id', validarJWT, empleadoConceptosPrecioController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { empleadoConceptosId, precio, horaDesde, horaHasta, cantidadDesde, cantidadHasta, tipoDiaId } = req.body;
-    const empleadoConceptoPrecio = await EmpleadoConceptosPrecio.create({
-      empleadoConceptosId,
-      precio,
-      horaDesde,
-      horaHasta,
-      cantidadDesde,
-      cantidadHasta,
-      tipoDiaId,
-    });
-    res.status(201).json(empleadoConceptoPrecio);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el EmpleadoConceptoPrecio' });
-  }
-};
+// Ruta para buscar todos los EmpleadoConceptosPrecios
+router.get('/empleadoConceptosPrecios', validarJWT, empleadoConceptosPrecioController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { empleadoConceptosId, precio, horaDesde, horaHasta, cantidadDesde, cantidadHasta, tipoDiaId } = req.body;
-    const empleadoConceptoPrecio = await EmpleadoConceptosPrecio.findByPk(id);
-    if (empleadoConceptoPrecio) {
-      await empleadoConceptoPrecio.update({
-        empleadoConceptosId,
-        precio,
-        horaDesde,
-        horaHasta,
-        cantidadDesde,
-        cantidadHasta,
-        tipoDiaId,
-      });
-      res.status(200).json(empleadoConceptoPrecio);
-    } else {
-      res.status(404).json({ error: 'EmpleadoConceptoPrecio no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el EmpleadoConceptoPrecio' });
-  }
-};
+// Ruta para crear un nuevo EmpleadoConceptosPrecio
+router.post('/empleadoConceptosPrecio', validarJWT, empleadoConceptosPrecioController.create);
 
-const findAllByEmpleadoConcepto = async (req, res) => {
-  try {
-    const { empleadoConceptosId } = req.params;
-    const empleadoConceptosPrecios = await EmpleadoConceptosPrecio.findAll({
-      where: { empleadoConceptosId },
-    });
-    res.status(200).json(empleadoConceptosPrecios);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar EmpleadoConceptosPrecios por EmpleadoConcepto' });
-  }
-};
+// Ruta para actualizar un EmpleadoConceptosPrecio por ID
+router.put('/empleadoConceptosPrecio/:id', validarJWT, empleadoConceptosPrecioController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  findAllByEmpleadoConcepto,
-};
+// Ruta para buscar todos los EmpleadoConceptosPrecios por EmpleadoConcepto
+router.get('/empleadoConceptosPrecios/empleadoConcepto/:empleadoConceptosId', validarJWT, empleadoConceptosPrecioController.findAllByEmpleadoConcepto);
+
+module.exports = router;

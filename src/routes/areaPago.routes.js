@@ -5,15 +5,15 @@ const { validarJWT } = require('../middlewares/validar-jwt');
 const router = Router();
 
 // Ruta para buscar un área de pago por ID
-router.get('/areapago/:id',validarJWT, areaPagoController.findById);
+router.get('/:id', validarJWT, areaPagoController.findById);
 
 // Ruta para buscar todas las áreas de pago
-router.get('/areaspago',validarJWT, areaPagoController.findAll);
+router.get('/', validarJWT, areaPagoController.findAll);
 
 // Ruta para crear un nuevo área de pago
-router.post('/areapago',validarJWT, areaPagoController.create);
+router.post('/', validarJWT, areaPagoController.create);
 
 // Ruta para actualizar un área de pago por ID
-router.put('/areapago/:id',validarJWT, areaPagoController.update);
+router.put('/:id', validarJWT, areaPagoController.update);
 
 module.exports = router;

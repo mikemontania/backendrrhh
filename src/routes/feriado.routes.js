@@ -1,84 +1,22 @@
-const Feriado = require('../models/feriado.model');
+const { Router } = require('express');
+const feriadoController = require('../controllers/feriado.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const feriado = await Feriado.findByPk(id);
-    if (feriado) {
-      res.status(200).json(feriado);
-    } else {
-      res.status(404).json({ error: 'Feriado no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar el feriado por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const feriados = await Feriado.findAll();
-    res.status(200).json(feriados);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar feriados' });
-  }
-};
+// Ruta para buscar un Feriado por ID
+router.get('/feriado/:id', validarJWT, feriadoController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { fecha, descripcion } = req.body;
-    const feriado = await Feriado.create({
-      fecha,
-      descripcion,
-    });
-    res.status(201).json(feriado);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el feriado' });
-  }
-};
+// Ruta para buscar todos los Feriados
+router.get('/feriados', validarJWT, feriadoController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { fecha, descripcion } = req.body;
-    const feriado = await Feriado.findByPk(id);
-    if (feriado) {
-      await feriado.update({
-        fecha,
-        descripcion,
-      });
-      res.status(200).json(feriado);
-    } else {
-      res.status(404).json({ error: 'Feriado no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el feriado' });
-  }
-};
+// Ruta para crear un nuevo Feriado
+router.post('/feriado', validarJWT, feriadoController.create);
 
-const deleteFeriado = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const feriado = await Feriado.findByPk(id);
-    if (feriado) {
-      await feriado.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Feriado no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el feriado' });
-  }
-};
+// Ruta para actualizar un Feriado por ID
+router.put('/feriado/:id', validarJWT, feriadoController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteFeriado,
-};
+// Ruta para eliminar un Feriado por ID
+router.delete('/feriado/:id', validarJWT, feriadoController.deleteFeriado);
+
+module.exports = router;

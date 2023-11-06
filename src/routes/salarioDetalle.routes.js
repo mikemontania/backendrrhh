@@ -1,78 +1,12 @@
-const SalarioDetalle = require('../models/salarioDetalle.model');
+const express = require('express');
+const router = express.Router();
+const salarioDetalleController = require('../controllers/salarioDetalle.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const salarioDetalle = await SalarioDetalle.findByPk(id);
-    if (salarioDetalle) {
-      res.status(200).json(salarioDetalle);
-    } else {
-      res.status(404).json({ error: 'SalarioDetalle no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar SalarioDetalle por ID' });
-  }
-};
+// Rutas para el controlador de SalarioDetalle
+router.get('/salarioDetalles', salarioDetalleController.findAll);
+router.get('/salarioDetalles/:id', salarioDetalleController.findById);
+router.post('/salarioDetalles', salarioDetalleController.create);
+router.put('/salarioDetalles/:id', salarioDetalleController.update);
+router.delete('/salarioDetalles/:id', salarioDetalleController.deleteSalarioDetalle);
 
-const findAll = async (req, res) => {
-  try {
-    const salarioDetalles = await SalarioDetalle.findAll();
-    res.status(200).json(salarioDetalles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar todos los SalarioDetalles' });
-  }
-};
-
-const create = async (req, res) => {
-  try {
-    const { fecha, monto, observacion, activo, empleadoId } = req.body;
-    const salarioDetalle = await SalarioDetalle.create({ fecha, monto, observacion, activo, empleadoId });
-    res.status(201).json(salarioDetalle);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el SalarioDetalle' });
-  }
-};
-
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { fecha, monto, observacion, activo, empleadoId } = req.body;
-    const salarioDetalle = await SalarioDetalle.findByPk(id);
-    if (salarioDetalle) {
-      await salarioDetalle.update({ fecha, monto, observacion, activo, empleadoId });
-      res.status(200).json(salarioDetalle);
-    } else {
-      res.status(404).json({ error: 'SalarioDetalle no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el SalarioDetalle' });
-  }
-};
-
-const deleteSalarioDetalle = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const salarioDetalle = await SalarioDetalle.findByPk(id);
-    if (salarioDetalle) {
-      await salarioDetalle.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'SalarioDetalle no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el SalarioDetalle' });
-  }
-};
-
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteSalarioDetalle,
-};
+module.exports = router;

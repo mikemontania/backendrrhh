@@ -1,78 +1,20 @@
-const Nacionalidad = require('../models/nacionalidad.model');
+const express = require('express');
+const router = express.Router();
+const nacionalidadController = require('../controllers/nacionalidad.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const nacionalidad = await Nacionalidad.findByPk(id);
-    if (nacionalidad) {
-      res.status(200).json(nacionalidad);
-    } else {
-      res.status(404).json({ error: 'Nacionalidad no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar nacionalidad por ID' });
-  }
-};
+// Ruta para buscar todas las nacionalidades
+router.get('/nacionalidades', nacionalidadController.findAll);
 
-const findAll = async (req, res) => {
-  try {
-    const nacionalidades = await Nacionalidad.findAll();
-    res.status(200).json(nacionalidades);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar todas las nacionalidades' });
-  }
-};
+// Ruta para buscar una nacionalidad por ID
+router.get('/nacionalidades/:id', nacionalidadController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion } = req.body;
-    const nacionalidad = await Nacionalidad.create({ descripcion });
-    res.status(201).json(nacionalidad);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la nacionalidad' });
-  }
-};
+// Ruta para crear una nueva nacionalidad
+router.post('/nacionalidades', nacionalidadController.create);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion } = req.body;
-    const nacionalidad = await Nacionalidad.findByPk(id);
-    if (nacionalidad) {
-      await nacionalidad.update({ descripcion });
-      res.status(200).json(nacionalidad);
-    } else {
-      res.status(404).json({ error: 'Nacionalidad no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la nacionalidad' });
-  }
-};
+// Ruta para actualizar una nacionalidad por ID
+router.put('/nacionalidades/:id', nacionalidadController.update);
 
-const deleteNacionalidad = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const nacionalidad = await Nacionalidad.findByPk(id);
-    if (nacionalidad) {
-      await nacionalidad.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Nacionalidad no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la nacionalidad' });
-  }
-};
+// Ruta para eliminar una nacionalidad por ID
+router.delete('/nacionalidades/:id', nacionalidadController.deleteNacionalidad);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteNacionalidad,
-};
+module.exports = router;

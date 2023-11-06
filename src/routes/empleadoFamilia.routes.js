@@ -1,90 +1,22 @@
-const { Op } = require('sequelize');
-const EmpleadoFamilia = require('../models/empleadoFamilia.model');
+const { Router } = require('express');
+const empleadoFamiliaController = require('../controllers/empleadoFamilia.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleadoFamilia = await EmpleadoFamilia.findByPk(id);
-    if (empleadoFamilia) {
-      res.status(200).json(empleadoFamilia);
-    } else {
-      res.status(404).json({ error: 'EmpleadoFamilia no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar la EmpleadoFamilia por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const empleadoFamilias = await EmpleadoFamilia.findAll();
-    res.status(200).json(empleadoFamilias);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar EmpleadoFamilias' });
-  }
-};
+// Ruta para buscar una EmpleadoFamilia por ID
+router.get('/empleadoFamilia/:id', validarJWT, empleadoFamiliaController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { nombre, fechaNacimiento, observacion, empleadoId, estadoCivilId, tipoFamiliaId } = req.body;
-    const empleadoFamilia = await EmpleadoFamilia.create({
-      nombre,
-      fechaNacimiento,
-      observacion,
-      empleadoId,
-      estadoCivilId,
-      tipoFamiliaId,
-    });
-    res.status(201).json(empleadoFamilia);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la EmpleadoFamilia' });
-  }
-};
+// Ruta para buscar todas las EmpleadoFamilias
+router.get('/empleadoFamilias', validarJWT, empleadoFamiliaController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { nombre, fechaNacimiento, observacion, empleadoId, estadoCivilId, tipoFamiliaId } = req.body;
-    const empleadoFamilia = await EmpleadoFamilia.findByPk(id);
-    if (empleadoFamilia) {
-      await empleadoFamilia.update({
-        nombre,
-        fechaNacimiento,
-        observacion,
-        empleadoId,
-        estadoCivilId,
-        tipoFamiliaId,
-      });
-      res.status(200).json(empleadoFamilia);
-    } else {
-      res.status(404).json({ error: 'EmpleadoFamilia no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la EmpleadoFamilia' });
-  }
-};
+// Ruta para crear una nueva EmpleadoFamilia
+router.post('/empleadoFamilia', validarJWT, empleadoFamiliaController.create);
 
-const findAllByEmpleado = async (req, res) => {
-  try {
-    const { empleadoId } = req.params;
-    const empleadoFamilias = await EmpleadoFamilia.findAll({
-      where: { empleadoId },
-    });
-    res.status(200).json(empleadoFamilias);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar EmpleadoFamilias por empleado' });
-  }
-};
+// Ruta para actualizar una EmpleadoFamilia por ID
+router.put('/empleadoFamilia/:id', validarJWT, empleadoFamiliaController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  findAllByEmpleado,
-};
+// Ruta para buscar todas las EmpleadoFamilias por empleado
+router.get('/empleadoFamilias/empleado/:empleadoId', validarJWT, empleadoFamiliaController.findAllByEmpleado);
+
+module.exports = router;

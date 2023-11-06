@@ -1,37 +1,15 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../dbconfig');
-const Empleado = require('./empleado.model'); // Asegúrate de importar el modelo de empleado
+const { Router } = require('express');
+const honorariosProfesionalesController = require('../controllers/honorarioProfesional.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const HonorariosProfesionales = sequelize.define('HonorariosProfesionales', {
-  fecha: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  monto: {
-    type: DataTypes.DECIMAL(18, 2),
-    allowNull: true,
-  },
-  observacion: {
-    type: DataTypes.STRING(80),
-    collate: 'Modern_Spanish_CI_AS',
-    allowNull: true,
-  },
-  activo: {
-    type: DataTypes.STRING(2),
-    collate: 'Modern_Spanish_CI_AS',
-    allowNull: true,
-  },
-}, {
-  tableName: 'honorarios_profesionales',
-  timestamps: false,
-  underscored: true, // Convierte automáticamente a snake_case
+const router = Router();
 
-});
+// Ruta para buscar todos los honorarios profesionales
+router.get('/honorariosprofesionales', validarJWT, honorariosProfesionalesController.findAll);
 
-// Definir la relación con la tabla Empleados
-HonorariosProfesionales.belongsTo(Empleado, {
-  foreignKey: 'empleadoId',
-  targetKey: 'id',
-});
+// Ruta para crear un nuevo honorario profesional
+router.post('/honorariosprofesionales', validarJWT, honorariosProfesionalesController.create);
 
-module.exports = HonorariosProfesionales;
+// Agregar rutas para otros controladores según tus necesidades
+
+module.exports = router;

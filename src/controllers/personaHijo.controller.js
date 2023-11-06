@@ -1,4 +1,4 @@
-const PersonasHijos = require('../models/personasHijos.model');
+const PersonasHijos = require('../models/personaHijo.model');
 const Empleado = require('../models/empleado.model'); // Asegúrate de importar el modelo Empleado
 const EstadoCivil = require('../models/estadoCivil.model'); // Asegúrate de importar el modelo EstadoCivil
 

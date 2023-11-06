@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig'); // Asegúrate de importar la instancia de Sequelize
-const { TipoDia } = require('./tipoDia.model'); // Asegúrate de importar la instancia de Sequelize
+const TipoDia = require('./tipoDia.model'); // Asegúrate de importar la instancia de Sequelize
 
 const PrecioConceptos = sequelize.define('PrecioConceptos', {
   id: {
@@ -39,9 +39,9 @@ const PrecioConceptos = sequelize.define('PrecioConceptos', {
 }, {
   tableName: 'precio_conceptos',
   timestamps: false,
-  underscored:true
+  underscored: true
 });
- 
+
 PrecioConceptos.belongsTo(TipoDia, { foreignKey: 'tipoDiaId', as: 'tipoDia' });
 
 module.exports = PrecioConceptos;

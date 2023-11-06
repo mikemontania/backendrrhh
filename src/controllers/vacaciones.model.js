@@ -1,4 +1,4 @@
-const { Vacaciones } = require('../models'); // Asegúrate de ajustar la ruta al modelo si es necesario
+const { Vacaciones } = require('../models/vacaciones.model'); // Asegúrate de ajustar la ruta al modelo si es necesario
 
 // Controlador para obtener todos los registros de Vacaciones
 const getAllVacaciones = async (req, res) => {

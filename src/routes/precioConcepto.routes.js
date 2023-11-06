@@ -1,94 +1,20 @@
-const PrecioConceptos = require('../models/precioConceptos.model');
+const express = require('express');
+const router = express.Router();
+const precioConceptosController = require('../controllers/precioConcepto.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const precioConceptos = await PrecioConceptos.findByPk(id);
-    if (precioConceptos) {
-      res.status(200).json(precioConceptos);
-    } else {
-      res.status(404).json({ error: 'PrecioConceptos no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar PrecioConceptos por ID' });
-  }
-};
+// Ruta para buscar todos los PrecioConceptos
+router.get('/precioConceptos', precioConceptosController.findAll);
 
-const findAll = async (req, res) => {
-  try {
-    const precioConceptos = await PrecioConceptos.findAll();
-    res.status(200).json(precioConceptos);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar todos los PrecioConceptos' });
-  }
-};
+// Ruta para buscar un PrecioConcepto por ID
+router.get('/precioConceptos/:id', precioConceptosController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { tipoDiaId, cantidadDesde, cantidadHasta, horaDesde, horaHasta, precio, subSectorConceptoId } = req.body;
-    const precioConceptos = await PrecioConceptos.create({
-      tipoDiaId,
-      cantidadDesde,
-      cantidadHasta,
-      horaDesde,
-      horaHasta,
-      precio,
-      subSectorConceptoId,
-    });
-    res.status(201).json(precioConceptos);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el PrecioConceptos' });
-  }
-};
+// Ruta para crear un nuevo PrecioConcepto
+router.post('/precioConceptos', precioConceptosController.create);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { tipoDiaId, cantidadDesde, cantidadHasta, horaDesde, horaHasta, precio, subSectorConceptoId } = req.body;
-    const precioConceptos = await PrecioConceptos.findByPk(id);
-    if (precioConceptos) {
-      await precioConceptos.update({
-        tipoDiaId,
-        cantidadDesde,
-        cantidadHasta,
-        horaDesde,
-        horaHasta,
-        precio,
-        subSectorConceptoId,
-      });
-      res.status(200).json(precioConceptos);
-    } else {
-      res.status(404).json({ error: 'PrecioConceptos no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el PrecioConceptos' });
-  }
-};
+// Ruta para actualizar un PrecioConcepto por ID
+router.put('/precioConceptos/:id', precioConceptosController.update);
 
-const deletePrecioConceptos = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const precioConceptos = await PrecioConceptos.findByPk(id);
-    if (precioConceptos) {
-      await precioConceptos.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'PrecioConceptos no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el PrecioConceptos' });
-  }
-};
+// Ruta para eliminar un PrecioConcepto por ID
+router.delete('/precioConceptos/:id', precioConceptosController.deletePrecioConceptos);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deletePrecioConceptos,
-};
+module.exports = router;

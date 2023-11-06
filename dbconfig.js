@@ -1,26 +1,23 @@
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DB_CNN, {
-    logging: true, // Habilita el registro de consultas (por defecto, true)
+    logging: false, //default true
     pool: {
-        max: 5,       // Número máximo de conexiones en el grupo
-        idle: 30000,  // Tiempo de inactividad antes de que la conexión se cierre
-        require: 60000 // Tiempo máximo para que una conexión se adquiera
+        max: 5,
+        idle: 30000,
+        require: 60000,
     }
 });
 
 const dbConnection = async () => {
     try {
         await sequelize.authenticate();
-        
-       // if (process.env.DB_INIT == 'true') {
-            // Destruye y vuelve a crear la base de datos
-       //     await sequelize.sync({ force: true });
-       // } else {
-            // Solo crea la base de datos si no existe
-        ///    await sequelize.sync();
-        //}
-        
+        await sequelize.sync().then(() => {
+            // Enable query logging
+            sequelize.options.logging = console.log;
+        });
+
+
         console.log('Conectado a la BD: %j', process.env.DB_CNN);
     } catch (error) {
         console.error(error);

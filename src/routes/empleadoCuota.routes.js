@@ -1,116 +1,22 @@
-const { Op } = require('sequelize');
-const EmpleadoCuotas = require('../models/empleadoCuotas.model');
+const { Router } = require('express');
+const empleadoCuotasController = require('../controllers/empleadoCuota.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empleadoCuota = await EmpleadoCuotas.findByPk(id);
-    if (empleadoCuota) {
-      res.status(200).json(empleadoCuota);
-    } else {
-      res.status(404).json({ error: 'EmpleadoCuota no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar la EmpleadoCuota por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const empleadoCuotas = await EmpleadoCuotas.findAll();
-    res.status(200).json(empleadoCuotas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar EmpleadoCuotas' });
-  }
-};
+// Ruta para buscar una EmpleadoCuota por ID
+router.get('/empleadoCuotas/:id', validarJWT, empleadoCuotasController.findById);
 
-const create = async (req, res) => {
-  try {
-    const {
-      empleadosId,
-      montoCuota,
-      nroCuota,
-      cantCuotas,
-      fechaCarga,
-      fechaVencimiento,
-      pagado,
-      saldo,
-      debitoCreditoId,
-    } = req.body;
-    const empleadoCuota = await EmpleadoCuotas.create({
-      empleadosId,
-      montoCuota,
-      nroCuota,
-      cantCuotas,
-      fechaCarga,
-      fechaVencimiento,
-      pagado,
-      saldo,
-      debitoCreditoId,
-    });
-    res.status(201).json(empleadoCuota);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la EmpleadoCuota' });
-  }
-};
+// Ruta para buscar todas las EmpleadoCuotas
+router.get('/empleadoCuotas', validarJWT, empleadoCuotasController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      empleadosId,
-      montoCuota,
-      nroCuota,
-      cantCuotas,
-      fechaCarga,
-      fechaVencimiento,
-      pagado,
-      saldo,
-      debitoCreditoId,
-    } = req.body;
-    const empleadoCuota = await EmpleadoCuotas.findByPk(id);
-    if (empleadoCuota) {
-      await empleadoCuota.update({
-        empleadosId,
-        montoCuota,
-        nroCuota,
-        cantCuotas,
-        fechaCarga,
-        fechaVencimiento,
-        pagado,
-        saldo,
-        debitoCreditoId,
-      });
-      res.status(200).json(empleadoCuota);
-    } else {
-      res.status(404).json({ error: 'EmpleadoCuota no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la EmpleadoCuota' });
-  }
-};
+// Ruta para crear una nueva EmpleadoCuota
+router.post('/empleadoCuotas', validarJWT, empleadoCuotasController.create);
 
-const findAllByEmpleado = async (req, res) => {
-  try {
-    const { empleadosId } = req.params;
-    const empleadoCuotas = await EmpleadoCuotas.findAll({
-      where: { empleadosId },
-    });
-    res.status(200).json(empleadoCuotas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar EmpleadoCuotas por empleado' });
-  }
-};
+// Ruta para actualizar una EmpleadoCuota por ID
+router.put('/empleadoCuotas/:id', validarJWT, empleadoCuotasController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  findAllByEmpleado,
-};
+// Ruta para buscar todas las EmpleadoCuotas por empleado
+router.get('/empleadoCuotas/empleado/:empleadosId', validarJWT, empleadoCuotasController.findAllByEmpleado);
+
+module.exports = router;

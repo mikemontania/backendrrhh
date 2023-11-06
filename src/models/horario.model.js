@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
-const SubSector = require('./SubSector'); // Asegúrate de importar el modelo SubSector
-const Turno = require('./Turno'); // Asegúrate de importar el modelo Turno
+const SubSector = require('./subSector.model'); // Asegúrate de importar el modelo SubSector
+const Turno = require('./turno.model'); // Asegúrate de importar el modelo Turno
 
 const Horario = sequelize.define('Horario', {
   horaDesde: {

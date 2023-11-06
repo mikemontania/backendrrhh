@@ -1,8 +1,13 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
-const  Empresa  = require('./empresa.model');
+const Empresa = require('./empresa.model');
 
 const Sucursal = sequelize.define('Sucursal', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   descripcion: {
     type: DataTypes.STRING,
     allowNull: true,

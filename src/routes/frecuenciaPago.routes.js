@@ -1,78 +1,22 @@
-const FrecuenciaPago = require('../models/frecuenciaPago.model');
+const { Router } = require('express');
+const frecuenciaPagoController = require('../controllers/frecuenciaPago.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const frecuenciaPago = await FrecuenciaPago.findByPk(id);
-    if (frecuenciaPago) {
-      res.status(200).json(frecuenciaPago);
-    } else {
-      res.status(404).json({ error: 'Frecuencia de pago no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar la frecuencia de pago por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const frecuenciasPago = await FrecuenciaPago.findAll();
-    res.status(200).json(frecuenciasPago);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar las frecuencias de pago' });
-  }
-};
+// Ruta para buscar una Frecuencia de Pago por ID
+router.get('/frecuenciapago/:id', validarJWT, frecuenciaPagoController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion } = req.body;
-    const frecuenciaPago = await FrecuenciaPago.create({ descripcion });
-    res.status(201).json(frecuenciaPago);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la frecuencia de pago' });
-  }
-};
+// Ruta para buscar todas las Frecuencias de Pago
+router.get('/frecuenciaspago', validarJWT, frecuenciaPagoController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion } = req.body;
-    const frecuenciaPago = await FrecuenciaPago.findByPk(id);
-    if (frecuenciaPago) {
-      await frecuenciaPago.update({ descripcion });
-      res.status(200).json(frecuenciaPago);
-    } else {
-      res.status(404).json({ error: 'Frecuencia de pago no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la frecuencia de pago' });
-  }
-};
+// Ruta para crear una nueva Frecuencia de Pago
+router.post('/frecuenciapago', validarJWT, frecuenciaPagoController.create);
 
-const deleteFrecuenciaPago = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const frecuenciaPago = await FrecuenciaPago.findByPk(id);
-    if (frecuenciaPago) {
-      await frecuenciaPago.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Frecuencia de pago no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la frecuencia de pago' });
-  }
-};
+// Ruta para actualizar una Frecuencia de Pago por ID
+router.put('/frecuenciapago/:id', validarJWT, frecuenciaPagoController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteFrecuenciaPago,
-};
+// Ruta para eliminar una Frecuencia de Pago por ID
+router.delete('/frecuenciapago/:id', validarJWT, frecuenciaPagoController.deleteFrecuenciaPago);
+
+module.exports = router;

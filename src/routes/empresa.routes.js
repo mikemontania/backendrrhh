@@ -1,91 +1,22 @@
-const { Op } = require('sequelize');
-const Empresa = require('../models/empresa.model');
+const { Router } = require('express');
+const empresaController = require('../controllers/empresa.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empresa = await Empresa.findByPk(id);
-    if (empresa) {
-      res.status(200).json(empresa);
-    } else {
-      res.status(404).json({ error: 'Empresa no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar la Empresa por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const empresas = await Empresa.findAll();
-    res.status(200).json(empresas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar Empresas' });
-  }
-};
+// Ruta para buscar una Empresa por ID
+router.get('/empresa/:id', validarJWT, empresaController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { razon_social, nombreComercial, ruc, telefono, email } = req.body;
-    const empresa = await Empresa.create({
-      razon_social,
-      nombreComercial,
-      ruc,
-      telefono,
-      email,
-    });
-    res.status(201).json(empresa);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear la Empresa' });
-  }
-};
+// Ruta para buscar todas las Empresas
+router.get('/empresas', validarJWT, empresaController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { razon_social, nombreComercial, ruc, telefono, email } = req.body;
-    const empresa = await Empresa.findByPk(id);
-    if (empresa) {
-      await empresa.update({
-        razon_social,
-        nombreComercial,
-        ruc,
-        telefono,
-        email,
-      });
-      res.status(200).json(empresa);
-    } else {
-      res.status(404).json({ error: 'Empresa no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar la Empresa' });
-  }
-};
+// Ruta para crear una nueva Empresa
+router.post('/empresa', validarJWT, empresaController.create);
 
-const deleteEmpresa = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const empresa = await Empresa.findByPk(id);
-    if (empresa) {
-      await empresa.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Empresa no encontrada' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la Empresa' });
-  }
-};
+// Ruta para actualizar una Empresa por ID
+router.put('/empresa/:id', validarJWT, empresaController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteEmpresa,
-};
+// Ruta para eliminar una Empresa por ID
+router.delete('/empresa/:id', validarJWT, empresaController.deleteEmpresa);
+
+module.exports = router;

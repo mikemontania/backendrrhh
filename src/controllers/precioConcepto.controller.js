@@ -1,4 +1,4 @@
-const PrecioConceptos = require('../models/precioConceptos.model');
+const PrecioConceptos = require('../models/precioConcepto.model');
 
 const findById = async (req, res) => {
   try {

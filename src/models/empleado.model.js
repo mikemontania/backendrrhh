@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
 
-
+const Horario = require('./horario.model');
 const Carrera = require('./carrera.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const EstadoCivil = require('./estadoCivil.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const Localidad = require('./localidad.model'); // Asegúrate de importar el modelo DesvinculacionCab
@@ -11,12 +11,12 @@ const Pais = require('./pais.model'); // Asegúrate de importar el modelo Desvin
 const Sector = require('./sector.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const SubSector = require('./subSector.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const CentroCosto = require('./centroCosto.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const AreaPago = require('./areaPago.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const FrecuenciaPago = require('./frecuenciaPago.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const Seleccion = require('./seleccion.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const TipoEmpleado = require('./tipoEmpleado.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const PorcentajeIps = require('./porcentajeIps.model'); // Asegúrate de importar el modelo DesvinculacionCab
 const Categoria = require('./categoria.model'); // Asegúrate de importar el modelo DesvinculacionCab
+const Empresa = require('./empresa.model');
 
 
 const Empleado = sequelize.define('Empleado', {
@@ -28,12 +28,40 @@ const Empleado = sequelize.define('Empleado', {
     type: DataTypes.STRING(8),
     allowNull: true,
   },
+  nombre: {
+    type: DataTypes.STRING(80),
+    allowNull: true,
+  },
   fechaIngreso: {
     type: DataTypes.DATE,
     allowNull: true,
   },
   fechaSalida: {
     type: DataTypes.DATE,
+    allowNull: true,
+  },
+  ingresoIps: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  salidaIps: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+
+  bonificacion: {
+    type: DataTypes.STRING(2),
+    allowNull: true,
+  },
+  lugarNacimiento: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+  },
+  interno: {
+    type: DataTypes.STRING(20),
+  },
+  corporativo: {
+    type: DataTypes.STRING(20),
     allowNull: true,
   },
   salarioActual: {
@@ -132,6 +160,14 @@ const Empleado = sequelize.define('Empleado', {
     type: DataTypes.DECIMAL(18, 2),
     allowNull: true,
   },
+  activo: {
+    type: DataTypes.STRING(2),
+    allowNull: true,
+  },
+  sexo: {
+    type: DataTypes.STRING(2),
+    allowNull: true,
+  },
   familiaresEmpresa: {
     type: DataTypes.STRING(2),
     allowNull: true,
@@ -176,14 +212,26 @@ const Empleado = sequelize.define('Empleado', {
 
 // Definir las relaciones con las tablas relacionadas
 // Asegúrate de tener los modelos de las tablas relacionadas definidos
+Empleado.belongsTo(Empresa, {
+  foreignKey: 'empresasId',
+  targetKey: 'id',
+});
+/*
+Empleado.belongsTo(Horario, {
+  foreignKey: 'horariosId',
+  targetKey: 'id',
+});
 
-
+Empleado.belongsTo(Carrera, {
+  foreignKey: 'carreraId',
+  targetKey: 'id',
+});*/
 Empleado.belongsTo(Sector, {
   foreignKey: 'sectorId',
   targetKey: 'id',
 });
 
- 
+
 
 Empleado.belongsTo(Categoria, {
   foreignKey: 'categoriaId',
@@ -206,12 +254,12 @@ Empleado.belongsTo(Barrio, {
 });
 
 Empleado.belongsTo(Nacionalidad, {
-  foreignKey: 'nacionalidadId',
+  foreignKey: 'nacionalidadesId',
   targetKey: 'id',
 });
 
 Empleado.belongsTo(Pais, {
-  foreignKey: 'paisId',
+  foreignKey: 'paisesId',
   targetKey: 'id',
 });
 
@@ -230,10 +278,6 @@ Empleado.belongsTo(CentroCosto, {
   targetKey: 'codigo',
 });
 
-Empleado.belongsTo(AreaPago, {
-  foreignKey: 'areaPagoId',
-  targetKey: 'id',
-});
 
 Empleado.belongsTo(FrecuenciaPago, {
   foreignKey: 'frecuenciaPagoId',
@@ -241,7 +285,7 @@ Empleado.belongsTo(FrecuenciaPago, {
 });
 
 Empleado.belongsTo(Seleccion, {
-  foreignKey: 'seleccionId',
+  foreignKey: 'via_seleccion',
   targetKey: 'id',
 });
 
@@ -254,7 +298,6 @@ Empleado.belongsTo(PorcentajeIps, {
   foreignKey: 'porcentajeIpsId',
   targetKey: 'id',
 });
-
 
 // Definir más relaciones según las tablas relacionadas
 

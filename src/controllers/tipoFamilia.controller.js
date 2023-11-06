@@ -1,4 +1,4 @@
-const { TipoFamilia } = require('../models'); // Asegúrate de importar el modelo TipoFamilia
+const { TipoFamilia } = require('../models/tipoFamilia.model'); // Asegúrate de importar el modelo TipoFamilia
 
 // Controlador para buscar todos los tipos de familia
 const findAllTipoFamilia = async (req, res) => {

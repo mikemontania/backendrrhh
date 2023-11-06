@@ -1,18 +1,19 @@
-const { TipoDia } = require('../models'); // Asegúrate de importar el modelo TipoDia
+// En tipoDia.routes.js
 
-// Controlador para buscar todos los tipos de días
-const findAllTipoDias = async (req, res) => {
-  try {
-    const tipoDias = await TipoDia.findAll();
-    res.json(tipoDias);
-  } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar los tipos de días' });
-  }
-};
+const express = require('express');
+const router = express.Router();
+const tipoDiaController = require('../controllers/tipoDia.controller'); // Asegúrate de que la importación del controlador sea correcta
 
-// Otros controladores relacionados con TipoDia se pueden agregar aquí, como crear, actualizar o eliminar registros.
+// Ruta para buscar un tipo de día por ID
+router.get('/tipo-dias/:id', tipoDiaController.findTipoDiaById);
 
-module.exports = {
-  findAllTipoDias,
-  // Agrega otros controladores aquí según sea necesario
-};
+// Ruta para crear un nuevo tipo de día
+router.post('/tipo-dias', tipoDiaController.createTipoDia);
+
+// Ruta para actualizar un tipo de día por ID
+router.put('/tipo-dias/:id', tipoDiaController.updateTipoDia);
+
+// Ruta para eliminar un tipo de día por ID
+router.delete('/tipo-dias/:id', tipoDiaController.deleteTipoDia);
+
+module.exports = router;

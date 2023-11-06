@@ -1,78 +1,20 @@
-const Pais = require('../models/pais.model');
+const express = require('express');
+const router = express.Router();
+const paisController = require('../controllers/pais.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const pais = await Pais.findByPk(id);
-    if (pais) {
-      res.status(200).json(pais);
-    } else {
-      res.status(404).json({ error: 'País no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar país por ID' });
-  }
-};
+// Ruta para buscar todos los países
+router.get('/paises', paisController.findAll);
 
-const findAll = async (req, res) => {
-  try {
-    const paises = await Pais.findAll();
-    res.status(200).json(paises);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar todos los países' });
-  }
-};
+// Ruta para buscar un país por ID
+router.get('/paises/:id', paisController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion } = req.body;
-    const pais = await Pais.create({ descripcion });
-    res.status(201).json(pais);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el país' });
-  }
-};
+// Ruta para crear un nuevo país
+router.post('/paises', paisController.create);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion } = req.body;
-    const pais = await Pais.findByPk(id);
-    if (pais) {
-      await pais.update({ descripcion });
-      res.status(200).json(pais);
-    } else {
-      res.status(404).json({ error: 'País no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el país' });
-  }
-};
+// Ruta para actualizar un país por ID
+router.put('/paises/:id', paisController.update);
 
-const deletePais = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const pais = await Pais.findByPk(id);
-    if (pais) {
-      await pais.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'País no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el país' });
-  }
-};
+// Ruta para eliminar un país por ID
+router.delete('/paises/:id', paisController.deletePais);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deletePais,
-};
+module.exports = router;

@@ -1,130 +1,21 @@
-const Horario = require('../models/horario.model');
+const { Router } = require('express');
+const horarioController = require('../controllers/horario.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const horario = await Horario.findByPk(id);
-    if (horario) {
-      res.status(200).json(horario);
-    } else {
-      res.status(404).json({ error: 'Horario no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar horario por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const horarios = await Horario.findAll();
-    res.status(200).json(horarios);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar los horarios' });
-  }
-};
+// Ruta para buscar todos los horarios
+router.get('/horarios', horarioController.findAll);
 
-const create = async (req, res) => {
-  try {
-    const {
-      horaDesde,
-      horaHasta,
-      tolerancia,
-      sabEntrada,
-      sabSalida,
-      domEntrada,
-      domSalida,
-      rango,
-      tolMin,
-      tipo,
-      subSectorId,
-      turnoId,
-    } = req.body;
-    const horario = await Horario.create({
-      horaDesde,
-      horaHasta,
-      tolerancia,
-      sabEntrada,
-      sabSalida,
-      domEntrada,
-      domSalida,
-      rango,
-      tolMin,
-      tipo,
-      subSectorId,
-      turnoId,
-    });
-    res.status(201).json(horario);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el horario' });
-  }
-};
+// Ruta para buscar un horario por ID
+router.get('/horarios/:id', horarioController.findById);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      horaDesde,
-      horaHasta,
-      tolerancia,
-      sabEntrada,
-      sabSalida,
-      domEntrada,
-      domSalida,
-      rango,
-      tolMin,
-      tipo,
-      subSectorId,
-      turnoId,
-    } = req.body;
-    const horario = await Horario.findByPk(id);
-    if (horario) {
-      await horario.update({
-        horaDesde,
-        horaHasta,
-        tolerancia,
-        sabEntrada,
-        sabSalida,
-        domEntrada,
-        domSalida,
-        rango,
-        tolMin,
-        tipo,
-        subSectorId,
-        turnoId,
-      });
-      res.status(200).json(horario);
-    } else {
-      res.status(404).json({ error: 'Horario no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el horario' });
-  }
-};
+// Ruta para crear un nuevo horario
+router.post('/horarios', horarioController.create);
 
-const deleteHorario = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const horario = await Horario.findByPk(id);
-    if (horario) {
-      await horario.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Horario no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el horario' });
-  }
-};
+// Ruta para actualizar un horario por ID
+router.put('/horarios/:id', horarioController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteHorario,
-};
+// Ruta para eliminar un horario por ID
+router.delete('/horarios/:id', horarioController.deleteHorario);
+
+module.exports = router;

@@ -1,37 +1,90 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../dbconfig');
-const Empleado = require('./empleado.model'); // Asegúrate de importar el modelo de empleado
+const HonorariosProfesionales = require('../models/honorarioProfesional.model');
 
-const HonorariosProfesionales = sequelize.define('HonorariosProfesionales', {
-  fecha: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  monto: {
-    type: DataTypes.DECIMAL(18, 2),
-    allowNull: true,
-  },
-  observacion: {
-    type: DataTypes.STRING(80),
-    collate: 'Modern_Spanish_CI_AS',
-    allowNull: true,
-  },
-  activo: {
-    type: DataTypes.STRING(2),
-    collate: 'Modern_Spanish_CI_AS',
-    allowNull: true,
-  },
-}, {
-  tableName: 'honorarios_profesionales',
-  timestamps: false,
-  underscored: true, // Convierte automáticamente a snake_case
+const findById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const honorariosProfesionales = await HonorariosProfesionales.findByPk(id);
+    if (honorariosProfesionales) {
+      res.status(200).json(honorariosProfesionales);
+    } else {
+      res.status(404).json({ error: 'Honorarios profesionales no encontrados' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al buscar honorarios profesionales por ID' });
+  }
+};
 
-});
+const findAll = async (req, res) => {
+  try {
+    const honorariosProfesionales = await HonorariosProfesionales.findAll();
+    res.status(200).json(honorariosProfesionales);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al buscar los honorarios profesionales' });
+  }
+};
 
-// Definir la relación con la tabla Empleados
-HonorariosProfesionales.belongsTo(Empleado, {
-  foreignKey: 'empleadoId',
-  targetKey: 'id',
-});
+const create = async (req, res) => {
+  try {
+    const { fecha, monto, observacion, activo, empleadoId } = req.body;
+    const honorariosProfesionales = await HonorariosProfesionales.create({
+      fecha,
+      monto,
+      observacion,
+      activo,
+      empleadoId,
+    });
+    res.status(201).json(honorariosProfesionales);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al crear los honorarios profesionales' });
+  }
+};
 
-module.exports = HonorariosProfesionales;
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fecha, monto, observacion, activo, empleadoId } = req.body;
+    const honorariosProfesionales = await HonorariosProfesionales.findByPk(id);
+    if (honorariosProfesionales) {
+      await honorariosProfesionales.update({
+        fecha,
+        monto,
+        observacion,
+        activo,
+        empleadoId,
+      });
+      res.status(200).json(honorariosProfesionales);
+    } else {
+      res.status(404).json({ error: 'Honorarios profesionales no encontrados' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al actualizar los honorarios profesionales' });
+  }
+};
+
+const deleteHonorariosProfesionales = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const honorariosProfesionales = await HonorariosProfesionales.findByPk(id);
+    if (honorariosProfesionales) {
+      await honorariosProfesionales.destroy();
+      res.status(204).json();
+    } else {
+      res.status(404).json({ error: 'Honorarios profesionales no encontrados' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al eliminar los honorarios profesionales' });
+  }
+};
+
+module.exports = {
+  findById,
+  findAll,
+  create,
+  update,
+  deleteHonorariosProfesionales,
+};

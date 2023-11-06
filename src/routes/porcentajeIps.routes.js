@@ -1,84 +1,20 @@
-const PorcentajeIps = require('../models/porcentajeIps.model');
+const express = require('express');
+const router = express.Router();
+const porcentajeIpsController = require('../controllers/porcentajeIps.controller');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const porcentajeIps = await PorcentajeIps.findByPk(id);
-    if (porcentajeIps) {
-      res.status(200).json(porcentajeIps);
-    } else {
-      res.status(404).json({ error: 'PorcentajeIps no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar PorcentajeIps por ID' });
-  }
-};
+// Ruta para buscar todos los porcentajes IPS
+router.get('/porcentajesIps', porcentajeIpsController.findAll);
 
-const findAll = async (req, res) => {
-  try {
-    const porcentajesIps = await PorcentajeIps.findAll();
-    res.status(200).json(porcentajesIps);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar todos los PorcentajeIps' });
-  }
-};
+// Ruta para buscar un porcentaje IPS por ID
+router.get('/porcentajesIps/:id', porcentajeIpsController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion, porcentaje } = req.body;
-    const porcentajeIps = await PorcentajeIps.create({
-      descripcion,
-      porcentaje,
-    });
-    res.status(201).json(porcentajeIps);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el PorcentajeIps' });
-  }
-};
+// Ruta para crear un nuevo porcentaje IPS
+router.post('/porcentajesIps', porcentajeIpsController.create);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion, porcentaje } = req.body;
-    const porcentajeIps = await PorcentajeIps.findByPk(id);
-    if (porcentajeIps) {
-      await porcentajeIps.update({
-        descripcion,
-        porcentaje,
-      });
-      res.status(200).json(porcentajeIps);
-    } else {
-      res.status(404).json({ error: 'PorcentajeIps no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el PorcentajeIps' });
-  }
-};
+// Ruta para actualizar un porcentaje IPS por ID
+router.put('/porcentajesIps/:id', porcentajeIpsController.update);
 
-const deletePorcentajeIps = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const porcentajeIps = await PorcentajeIps.findByPk(id);
-    if (porcentajeIps) {
-      await porcentajeIps.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'PorcentajeIps no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el PorcentajeIps' });
-  }
-};
+// Ruta para eliminar un porcentaje IPS por ID
+router.delete('/porcentajesIps/:id', porcentajeIpsController.deletePorcentajeIps);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deletePorcentajeIps,
-};
+module.exports = router;

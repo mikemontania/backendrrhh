@@ -2,7 +2,12 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
 
 const Empresa = sequelize.define('Empresa', {
-  razon_social: {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  razonSocial: {
     type: DataTypes.STRING,
     allowNull: true,
   },

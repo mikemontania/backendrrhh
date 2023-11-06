@@ -1,82 +1,22 @@
-const EstadoCivil = require('../models/estadoCivil.model');
+const { Router } = require('express');
+const estadoCivilController = require('../controllers/estadoCivil.controller');
+const { validarJWT } = require('../middlewares/validar-jwt');
 
-const findById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const estadoCivil = await EstadoCivil.findByPk(id);
-    if (estadoCivil) {
-      res.status(200).json(estadoCivil);
-    } else {
-      res.status(404).json({ error: 'Estado civil no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar el estado civil por ID' });
-  }
-};
+const router = Router();
 
-const findAll = async (req, res) => {
-  try {
-    const estadosCiviles = await EstadoCivil.findAll();
-    res.status(200).json(estadosCiviles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar estados civiles' });
-  }
-};
+// Ruta para buscar un Estado Civil por ID
+router.get('/estadoCivil/:id', validarJWT, estadoCivilController.findById);
 
-const create = async (req, res) => {
-  try {
-    const { descripcion } = req.body;
-    const estadoCivil = await EstadoCivil.create({
-      descripcion,
-    });
-    res.status(201).json(estadoCivil);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al crear el estado civil' });
-  }
-};
+// Ruta para buscar todos los Estados Civiles
+router.get('/estadosCiviles', validarJWT, estadoCivilController.findAll);
 
-const update = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { descripcion } = req.body;
-    const estadoCivil = await EstadoCivil.findByPk(id);
-    if (estadoCivil) {
-      await estadoCivil.update({
-        descripcion,
-      });
-      res.status(200).json(estadoCivil);
-    } else {
-      res.status(404).json({ error: 'Estado civil no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el estado civil' });
-  }
-};
+// Ruta para crear un nuevo Estado Civil
+router.post('/estadoCivil', validarJWT, estadoCivilController.create);
 
-const deleteEstadoCivil = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const estadoCivil = await EstadoCivil.findByPk(id);
-    if (estadoCivil) {
-      await estadoCivil.destroy();
-      res.status(204).json();
-    } else {
-      res.status(404).json({ error: 'Estado civil no encontrado' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar el estado civil' });
-  }
-};
+// Ruta para actualizar un Estado Civil por ID
+router.put('/estadoCivil/:id', validarJWT, estadoCivilController.update);
 
-module.exports = {
-  findById,
-  findAll,
-  create,
-  update,
-  deleteEstadoCivil,
-};
+// Ruta para eliminar un Estado Civil por ID
+router.delete('/estadoCivil/:id', validarJWT, estadoCivilController.deleteEstadoCivil);
+
+module.exports = router;
