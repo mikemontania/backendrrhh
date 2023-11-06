@@ -43,8 +43,6 @@ const findAll = async (req, res = response) => {
   }
 };
 
-
-// Método para buscar todos los empleados
 const findAllConcat = async (req, res = response) => {
   // Obtén el usuario autenticado del objeto req
   const { empresaId } = req.user;
@@ -61,19 +59,27 @@ const findAllConcat = async (req, res = response) => {
       condition.activo = 'N';
     }
 
-    const empleados = await Empleado.findAll({ where: condition });
+    // Define los campos que deseas seleccionar (id, nombre, ci)
+    const attributes = ['id', 'nombre', 'ci'];
 
+    const empleados = await Empleado.findAll({
+      where: condition,
+      attributes: attributes, // Selecciona los campos especificados
+    });
+    console.log(empleados)
     // Concatena "ci - nombre" para cada empleado
-    // const empleadosConcatenados = empleados.map((empleado) => {id:empleado.id,
-    //   concat:`${empleado.ci} - ${empleado.nombre}`
-    // });
+    const empleadosConcatenados = empleados.map((empleado) => ({
+      id: empleado.id,
+      concat: `${empleado.ci} - ${empleado.nombre} -  ${empleado.id}`,
+    }));
 
-    res.status(200).json(empleados);
+    res.status(200).json(empleadosConcatenados);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al buscar empleados' });
   }
 };
+
 
 // Método para crear un nuevo empleado
 const create = async (req, res) => {

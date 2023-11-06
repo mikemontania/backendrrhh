@@ -210,22 +210,21 @@ const Empleado = sequelize.define('Empleado', {
   underscored: true, // Establecer a true para utilizar snake_case
 });
 
-// Definir las relaciones con las tablas relacionadas
-// Asegúrate de tener los modelos de las tablas relacionadas definidos
+// Definir las relaciones con las tablas relacionadas 
 Empleado.belongsTo(Empresa, {
   foreignKey: 'empresasId',
   targetKey: 'id',
 });
-/*
+ 
 Empleado.belongsTo(Horario, {
   foreignKey: 'horariosId',
   targetKey: 'id',
 });
-
+ 
 Empleado.belongsTo(Carrera, {
   foreignKey: 'carreraId',
   targetKey: 'id',
-});*/
+});
 Empleado.belongsTo(Sector, {
   foreignKey: 'sectorId',
   targetKey: 'id',
