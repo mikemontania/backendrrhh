@@ -1,13 +1,54 @@
-const Empleado = require('../models/empleado.model'); // Asegúrate de que la importación del modelo sea correcta
+const Empleado = require('../models/empleado.model');
+const Horario = require('../models/horario.model');
+const Carrera = require('../models/carrera.model');
+const EstadoCivil = require('../models/estadoCivil.model');
+const Localidad = require('../models/localidad.model');
+const Barrio = require('../models/barrio.model');
+const Nacionalidad = require('../models/nacionalidad.model');
+const Pais = require('../models/pais.model');
+const Sector = require('../models/sector.model');
+const SubSector = require('../models/subSector.model');
+const CentroCosto = require('../models/centroCosto.model');
+const FrecuenciaPago = require('../models/frecuenciaPago.model');
+const Seleccion = require('../models/seleccion.model');
+const TipoEmpleado = require('../models/tipoEmpleado.model');
+const PorcentajeIps = require('../models/porcentajeIps.model');
+const Categoria = require('../models/categoria.model');
+const Empresa = require('../models/empresa.model');
+const Sucursal = require('../models/sucursal.model');
 const { sequelize } = require('../../dbconfig');
 const { response } = require('express');
+const Turno = require('../models/turno.model');
 
 // Método para buscar un empleado por ID
 const findById = async (req, res) => {
   try {
     const { id } = req.params;
-    const empleado = await Empleado.findByPk(id);
+    const empleado = await Empleado.findByPk(id, {
+      include: [
+        { model: Empresa, as: 'empresa' },
+        { model: Horario, as: 'horario' },
+        { model: Carrera, as: 'carrera' },
+        { model: Sector, as: 'sector' },
+        { model: Categoria, as: 'categoria' },
+        { model: EstadoCivil, as: 'estadoCivil' },
+        { model: Localidad, as: 'localidad' },
+        { model: Barrio, as: 'barrio' },
+        { model: Nacionalidad, as: 'nacionalidad' },
+        { model: Pais, as: 'pais' },
+        { model: SubSector, as: 'subSector' },
+        { model: CentroCosto, as: 'centroCosto' },
+        { model: FrecuenciaPago, as: 'frecuenciaPago' },
+        { model: Seleccion, as: 'seleccion' },
+        { model: TipoEmpleado, as: 'tipoEmpleado' },
+        { model: PorcentajeIps, as: 'porcentajeIps' },
+        { model: Sucursal, as: 'sucursal' },
+        { model: Turno, as: 'turno' },
+      ],
+    });
+
     if (empleado) {
+      console.log(empleado)
       res.status(200).json(empleado);
     } else {
       res.status(404).json({ error: 'Empleado no encontrado' });
@@ -66,7 +107,6 @@ const findAllConcat = async (req, res = response) => {
       where: condition,
       attributes: attributes, // Selecciona los campos especificados
     });
-    console.log(empleados)
     // Concatena "ci - nombre" para cada empleado
     const empleadosConcatenados = empleados.map((empleado) => ({
       id: empleado.id,

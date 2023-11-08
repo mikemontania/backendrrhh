@@ -11,22 +11,22 @@ const findAllSubSector = async (req, res) => {
   }
 };
 
-// Controlador para buscar una subselección por su ID
+// Controlador para buscar una SubSector por su ID
 const findSubSectorById = async (req, res) => {
-  const { id } = req.params;
+  const { sectorId } = req.params;
   try {
-    const subSector = await SubSector.findByPk(id);
+    const subSector = await SubSector.findAll({ where: { sectorId } });
     if (!subSector) {
-      res.status(404).json({ error: 'Subselección no encontrada.' });
+      res.status(404).json({ error: 'SubSector no encontrada.' });
     } else {
       res.status(200).json(subSector);
     }
   } catch (error) {
-    res.status(500).json({ error: 'No se pudo recuperar la subselección.' });
+    res.status(500).json({ error: 'No se pudo recuperar la SubSector.' });
   }
 };
 
-// Controlador para crear una nueva subselección
+// Controlador para crear una nueva SubSector
 const create = async (req, res) => {
   const { descripcion, sectorId } = req.body;
   try {
@@ -38,25 +38,25 @@ const create = async (req, res) => {
       res.status(201).json(nuevaSubSector);
     }
   } catch (error) {
-    res.status(500).json({ error: 'No se pudo crear la subselección.' });
+    res.status(500).json({ error: 'No se pudo crear la SubSector.' });
   }
 };
 
-// Controlador para actualizar una subselección existente
+// Controlador para actualizar una SubSector existente
 const update = async (req, res) => {
   const { id } = req.params;
   const { descripcion } = req.body;
   try {
     const subSector = await SubSector.findByPk(id);
     if (!subSector) {
-      res.status(404).json({ error: 'Subselección no encontrada.' });
+      res.status(404).json({ error: 'SubSector no encontrada.' });
     } else {
       subSector.descripcion = descripcion;
       await subSector.save();
       res.status(200).json(subSector);
     }
   } catch (error) {
-    res.status(500).json({ error: 'No se pudo actualizar la subselección.' });
+    res.status(500).json({ error: 'No se pudo actualizar la SubSector.' });
   }
 };
 

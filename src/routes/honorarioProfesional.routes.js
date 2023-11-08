@@ -3,7 +3,8 @@ const honorariosProfesionalesController = require('../controllers/honorarioProfe
 const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
-
+// Ruta para buscar todos los honorarios profesionales
+router.get('/fun/:id', validarJWT, honorariosProfesionalesController.findHistorial);
 // Ruta para buscar todos los honorarios profesionales
 router.get('/honorariosprofesionales', validarJWT, honorariosProfesionalesController.findAll);
 

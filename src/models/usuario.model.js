@@ -58,7 +58,7 @@ const Usuario = sequelize.define('Usuario', {
   timestamps: false,
   underscored: true,
   // Esto convierte los nombres de modelos de pascalCase a snake_case
-  freezeTableName: true,
+
 });
 
 // Definir las relaciones con las tablas de roles, sucursales y empresas

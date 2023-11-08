@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
-const  Sucursal  = require('./sucursal.model');
-const  Empresa  = require('./empresa.model');
+const Sucursal = require('./sucursal.model');
+const Empresa = require('./empresa.model');
 
 const Sector = sequelize.define('Sector', {
   descripcion: {
@@ -12,10 +12,14 @@ const Sector = sequelize.define('Sector', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  empresasId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 }, {
   tableName: 'sector',
   timestamps: false,
-  underscored:true
+  underscored: true
 });
 
 // Definir las relaciones con las tablas de sucursales y empresas

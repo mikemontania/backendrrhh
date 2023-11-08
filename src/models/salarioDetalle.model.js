@@ -25,6 +25,8 @@ const SalarioDetalle = sequelize.define('SalarioDetalle', {
 }, {
   tableName: 'salarios_detalle',
   timestamps: false,
+  underscored: true, // Convierte automáticamente a snake_case
+
 });
 
 // Definir la relación con la tabla Empleados

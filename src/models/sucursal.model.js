@@ -20,6 +20,10 @@ const Sucursal = sequelize.define('Sucursal', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  empresasId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -31,6 +35,7 @@ const Sucursal = sequelize.define('Sucursal', {
 }, {
   tableName: 'sucursales',
   timestamps: false,
+  underscored: true
 });
 
 // Definir la relación con la tabla de empresas

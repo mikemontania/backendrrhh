@@ -1,13 +1,18 @@
 const Empresa = require('../models/empresa.model'); // Asegúrate de importar el modelo Sucursal y Empresa
 const Sucursal = require('../models/sucursal.model'); // Asegúrate de importar el modelo Sucursal y Empresa
+const { response } = require('express');
 
-// Controlador para buscar todas las sucursales
-const findAllSucursales = async (req, res) => {
+
+// Controlador para buscar todas las sucursales de una empresa
+const findAll = async (req, res = response) => {
+  const { empresaId } = req.user;
   try {
-    const sucursales = await Sucursal.findAll();
+    const sucursales = await Sucursal.findAll({
+      where: { empresasId: empresaId },
+    });
     res.status(200).json(sucursales);
   } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar las sucursales.' });
+    res.status(500).json({ error: 'No se pudieron recuperar las sucursales de la empresa.' });
   }
 };
 
@@ -64,24 +69,11 @@ const updateSucursal = async (req, res) => {
   }
 };
 
-// Controlador para buscar todas las sucursales de una empresa
-const findAllByEmpresa = async (req, res) => {
-  const { empresasId } = req.params;
-  try {
-    const sucursales = await Sucursal.findAll({
-      where: { empresasId },
-      include: [{ model: Empresa, as: 'empresa' }],
-    });
-    res.status(200).json(sucursales);
-  } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar las sucursales de la empresa.' });
-  }
-};
+
 
 module.exports = {
-  findAllSucursales,
+  findAll,
   findSucursalById,
   createSucursal,
   updateSucursal,
-  findAllByEmpresa,
 };

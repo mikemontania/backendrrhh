@@ -1,5 +1,6 @@
 const CentroCosto = require('../models/centroCosto.model'); // Asegúrate de que la importación del modelo sea correcta
 const { sequelize } = require('../../dbconfig');
+const { response } = require('express');
 
 const findById = async (req, res) => {
   try {
@@ -16,23 +17,19 @@ const findById = async (req, res) => {
   }
 };
 
-// Método para buscar todos los centros de costo de una empresa (puedes agregar otras condiciones específicas según tu necesidad)
-const findAllByEmpresa = async (req, res) => {
-  try {
-    const { empresasId } = req.params; // Asumiendo que pasas el ID de la empresa como parámetro en la URL
-    const centrosCosto = await CentroCosto.findAll({ where: { empresasId } });
-    res.status(200).json(centrosCosto);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al buscar centros de costo por empresa' });
-  }
-};
+
 
 // Método para buscar todos los centros de costo
-const findAll = async (req, res) => {
+const findAll = async (req, res = response) => {
   try {
-    const centrosCosto = await CentroCosto.findAll();
-    res.status(200).json(centrosCosto);
+    const { empresaId } = req.user; // Asumiendo que pasas el ID de la empresa como parámetro en la URL
+    const centrosCosto = await CentroCosto.findAll({ where: { empresasId: empresaId } });
+    const listConcat = await centrosCosto.map((c) => ({
+      codigo: c.codigo, // Usar c en lugar de centrosCosto
+      concat: `${c.codigo} - ${c.descripcion}`, // Usar c en lugar de centrosCosto
+      descripcion: c.descripcion // Usar c en lugar de centrosCosto
+    }));
+    res.status(200).json(listConcat);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al buscar centros de costo' });
@@ -72,7 +69,6 @@ const update = async (req, res) => {
 module.exports = {
   findById,
   findAll,
-  findAllByEmpresa,
   create,
   update,
 };

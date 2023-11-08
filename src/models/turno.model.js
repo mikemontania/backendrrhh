@@ -9,12 +9,16 @@ const Turno = sequelize.define('Turno', {
   },
   tipo: {
     type: DataTypes.STRING(2),
-    collate: 'Modern_Spanish_CI_AS', 
+    collate: 'Modern_Spanish_CI_AS',
+  },
+  empresasId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
 }, {
   tableName: 'turnos',
   timestamps: false,
-  underscored:true
+  underscored: true
 });
 Turno.belongsTo(Empresa, {
   foreignKey: 'empresasId',
@@ -22,4 +26,3 @@ Turno.belongsTo(Empresa, {
 });
 
 module.exports = Turno;
- 

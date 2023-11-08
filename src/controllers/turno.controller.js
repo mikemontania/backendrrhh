@@ -1,12 +1,14 @@
-const  Turno  = require('../models/turno.model'); // Asegúrate de ajustar la ruta al modelo si es necesario
+const Turno = require('../models/turno.model'); // Asegúrate de ajustar la ruta al modelo si es necesario
 
 // Controlador para obtener todos los turnos
-const getAllTurnos = async (req, res) => {
+
+const findAll = async (req, res = response) => {
+  const { empresaId } = req.user;
   try {
-    const turnos = await Turno.findAll();
-    res.json(turnos);
+    const turnos = await Turno.findAll({ where: { empresasId: empresaId } });
+    res.status(200).json(turnos);
   } catch (error) {
-    res.status(500).json({ error: 'No se pudieron recuperar los turnos' });
+    res.status(500).json({ error: 'No se pudieron recuperar las turnos de la empresa.' });
   }
 };
 
@@ -81,7 +83,7 @@ const deleteTurno = async (req, res) => {
 };
 
 module.exports = {
-  getAllTurnos,
+  findAll,
   getTurnoById,
   createTurno,
   updateTurno,

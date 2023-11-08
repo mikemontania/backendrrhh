@@ -11,7 +11,7 @@ router.get('/barrio/:id', validarJWT, barrioController.findById);
 router.get('/barrios', validarJWT, barrioController.findAll);
 
 // Ruta para buscar todos los barrios por sector
-router.get('/barrios/sector/:sectorId', validarJWT, barrioController.findAllBySector);
+router.get('/localidad/:localidadId', validarJWT, barrioController.findAllByLocalidad);
 
 // Ruta para crear un nuevo barrio
 router.post('/barrio', validarJWT, barrioController.create);

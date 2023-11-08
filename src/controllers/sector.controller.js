@@ -1,3 +1,4 @@
+const { response } = require('express');
 const Sector = require('../models/sector.model');
 
 const findById = async (req, res) => {
@@ -15,9 +16,10 @@ const findById = async (req, res) => {
   }
 };
 
-const findAll = async (req, res) => {
+const findAll = async (req, res = response) => {
   try {
-    const sectores = await Sector.findAll();
+    const { empresaId } = req.user;
+    const sectores = await Sector.findAll({ where: { empresasId: empresaId } });
     res.status(200).json(sectores);
   } catch (error) {
     console.error(error);

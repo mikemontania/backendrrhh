@@ -1,23 +1,23 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../dbconfig');
-
 const Horario = require('./horario.model');
-const Carrera = require('./carrera.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const EstadoCivil = require('./estadoCivil.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Localidad = require('./localidad.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Barrio = require('./barrio.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Nacionalidad = require('./nacionalidad.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Pais = require('./pais.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Sector = require('./sector.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const SubSector = require('./subSector.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const CentroCosto = require('./centroCosto.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const FrecuenciaPago = require('./frecuenciaPago.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Seleccion = require('./seleccion.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const TipoEmpleado = require('./tipoEmpleado.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const PorcentajeIps = require('./porcentajeIps.model'); // Asegúrate de importar el modelo DesvinculacionCab
-const Categoria = require('./categoria.model'); // Asegúrate de importar el modelo DesvinculacionCab
+const Carrera = require('./carrera.model');
+const EstadoCivil = require('./estadoCivil.model');
+const Localidad = require('./localidad.model');
+const Barrio = require('./barrio.model');
+const Nacionalidad = require('./nacionalidad.model');
+const Pais = require('./pais.model');
+const Sector = require('./sector.model');
+const SubSector = require('./subSector.model');
+const CentroCosto = require('./centroCosto.model');
+const FrecuenciaPago = require('./frecuenciaPago.model');
+const Seleccion = require('./seleccion.model');
+const TipoEmpleado = require('./tipoEmpleado.model');
+const PorcentajeIps = require('./porcentajeIps.model');
+const Categoria = require('./categoria.model');
 const Empresa = require('./empresa.model');
-
+const Sucursal = require('./sucursal.model');
+const Turno = require('./turno.model');
 
 const Empleado = sequelize.define('Empleado', {
   legajo: {
@@ -32,22 +32,7 @@ const Empleado = sequelize.define('Empleado', {
     type: DataTypes.STRING(80),
     allowNull: true,
   },
-  fechaIngreso: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  fechaSalida: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  ingresoIps: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  salidaIps: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
+
 
   bonificacion: {
     type: DataTypes.STRING(2),
@@ -87,6 +72,27 @@ const Empleado = sequelize.define('Empleado', {
   fechaNacimiento: {
     type: DataTypes.DATE,
     allowNull: true,
+
+  },
+  fechaIngreso: {
+    type: DataTypes.DATE,
+    allowNull: true,
+
+  },
+  fechaSalida: {
+    type: DataTypes.DATE,
+    allowNull: true,
+
+  },
+  ingresoIps: {
+    type: DataTypes.DATE,
+    allowNull: true,
+
+  },
+  salidaIps: {
+    type: DataTypes.DATE,
+    allowNull: true,
+
   },
   direccion: {
     type: DataTypes.STRING(200),
@@ -204,6 +210,78 @@ const Empleado = sequelize.define('Empleado', {
     type: DataTypes.BOOLEAN,
     allowNull: true,
   },
+  empresasId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  sucursalesId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  horariosId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  carreraId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  sectorId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  categoriaId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  estadoCivilId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  localidadId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  barrioId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  nacionalidadesId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  paisesId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  subSectorId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  centroCostoCodigo: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  frecuenciaPagoId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  via_seleccion: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  tipoEmpleadoId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  turnosId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  porcentajeIpsId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  }
 }, {
   tableName: 'empleados',
   timestamps: false,
@@ -214,89 +292,111 @@ const Empleado = sequelize.define('Empleado', {
 Empleado.belongsTo(Empresa, {
   foreignKey: 'empresasId',
   targetKey: 'id',
+  as: 'empresa',
 });
- 
+
+Empleado.belongsTo(Sucursal, {
+  foreignKey: 'sucursalesId',
+  targetKey: 'id',
+  as: 'sucursal',
+});
+Empleado.belongsTo(Turno, {
+  foreignKey: 'turnosId',
+  targetKey: 'id',
+  as: 'turno',
+});
+
 Empleado.belongsTo(Horario, {
   foreignKey: 'horariosId',
   targetKey: 'id',
+  as: 'horario',
 });
- 
+
 Empleado.belongsTo(Carrera, {
   foreignKey: 'carreraId',
   targetKey: 'id',
+  as: 'carrera',
 });
-Empleado.belongsTo(Sector, {
-  foreignKey: 'sectorId',
-  targetKey: 'id',
-});
-
 
 
 Empleado.belongsTo(Categoria, {
   foreignKey: 'categoriaId',
   targetKey: 'id',
+  as: 'categoria',
 });
 
 Empleado.belongsTo(EstadoCivil, {
   foreignKey: 'estadoCivilId',
   targetKey: 'id',
+  as: 'estadoCivil',
 });
 
 Empleado.belongsTo(Localidad, {
   foreignKey: 'localidadId',
   targetKey: 'id',
+  as: 'localidad',
 });
 
 Empleado.belongsTo(Barrio, {
   foreignKey: 'barrioId',
   targetKey: 'id',
+  as: 'barrio',
 });
 
 Empleado.belongsTo(Nacionalidad, {
   foreignKey: 'nacionalidadesId',
   targetKey: 'id',
+  as: 'nacionalidad',
 });
 
 Empleado.belongsTo(Pais, {
   foreignKey: 'paisesId',
   targetKey: 'id',
+  as: 'pais',
 });
 
 Empleado.belongsTo(Sector, {
   foreignKey: 'sectorId',
   targetKey: 'id',
+  as: 'sector',
 });
 
 Empleado.belongsTo(SubSector, {
   foreignKey: 'subSectorId',
   targetKey: 'id',
+  as: 'subSector',
 });
 
 Empleado.belongsTo(CentroCosto, {
   foreignKey: 'centroCostoCodigo',
   targetKey: 'codigo',
+  as: 'centroCosto',
 });
-
 
 Empleado.belongsTo(FrecuenciaPago, {
   foreignKey: 'frecuenciaPagoId',
   targetKey: 'id',
+  as: 'frecuenciaPago',
 });
 
 Empleado.belongsTo(Seleccion, {
   foreignKey: 'via_seleccion',
   targetKey: 'id',
+  as: 'seleccion',
 });
 
 Empleado.belongsTo(TipoEmpleado, {
   foreignKey: 'tipoEmpleadoId',
   targetKey: 'id',
+  as: 'tipoEmpleado',
 });
 
 Empleado.belongsTo(PorcentajeIps, {
   foreignKey: 'porcentajeIpsId',
   targetKey: 'id',
+  as: 'porcentajeIps',
 });
+
 
 // Definir más relaciones según las tablas relacionadas
 

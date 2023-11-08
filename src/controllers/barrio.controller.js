@@ -16,14 +16,14 @@ const findById = async (req, res) => {
   }
 };
 // Método para buscar todos los registros por empresa (puedes agregar otras condiciones específicas según tu necesidad)
-const findAllBySector = async (req, res) => {
+const findAllByLocalidad = async (req, res) => {
   try {
-    const { sectorId } = req.params; // Asumiendo que pasas el ID de la empresa como parámetro en la URL
-    const barrios = await Barrio.findAll({ where: { sectorId } });
+    const { localidadId } = req.params; // Asumiendo que pasas el ID de la empresa como parámetro en la URL
+    const barrios = await Barrio.findAll({ where: { localidadId } });
     res.status(200).json(barrios);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error al buscar ausencias por empresa' });
+    res.status(500).json({ error: 'Error al buscar barrios' });
   }
 };
 // Método para buscar todos los registros
@@ -67,12 +67,12 @@ const update = async (req, res) => {
   }
 };
 
- 
+
 
 module.exports = {
   findById,
   findAll,
-  findAllBySector,
+  findAllByLocalidad,
   create,
-  update, 
+  update,
 };

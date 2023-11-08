@@ -25,6 +25,30 @@ const findAll = async (req, res) => {
   }
 };
 
+
+// Controlador para buscar una SubSector por su ID
+const findTurnoById = async (req, res) => {
+  const { turnosId, subSectorId } = req.params;
+  try {
+
+    const condiciones = {
+      turnosId: turnosId,
+      subSectorId: subSectorId
+    }
+
+    const subSector = await Horario.findAll({ where: condiciones });
+    console.log(subSector)
+    if (!subSector) {
+      res.status(404).json({ error: 'Horario no encontrada.' });
+    } else {
+      res.status(200).json(subSector);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudo recuperar la Horario.' });
+  }
+};
+
+
 const create = async (req, res) => {
   try {
     const {
@@ -127,4 +151,5 @@ module.exports = {
   create,
   update,
   deleteHorario,
+  findTurnoById
 };

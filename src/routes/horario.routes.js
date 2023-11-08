@@ -8,6 +8,8 @@ router.get('/horarios', horarioController.findAll);
 
 // Ruta para buscar un horario por ID
 router.get('/horarios/:id', horarioController.findById);
+// Ruta para buscar un horario por ID
+router.get('/turnosubsector/:turnosId/:subSectorId', horarioController.findTurnoById);
 
 // Ruta para crear un nuevo horario
 router.post('/horarios', horarioController.create);

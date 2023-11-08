@@ -1,4 +1,4 @@
-const { TipoEmpleado } = require('../models/tipoEmpleado.model'); // Asegúrate de importar el modelo TipoEmpleado
+const TipoEmpleado = require('../models/tipoEmpleado.model'); // Asegúrate de importar el modelo TipoEmpleado
 
 // Controlador para buscar un tipo de empleado por ID
 const findTipoEmpleadoById = async (req, res) => {
@@ -13,6 +13,14 @@ const findTipoEmpleadoById = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: 'No se pudo encontrar el tipo de empleado por ID' });
+  }
+};
+const findAll = async (req, res) => {
+  try {
+    const list = await TipoEmpleado.findAll();
+    res.status(200).json(list);
+  } catch (error) {
+    res.status(500).json({ error: 'No se pudieron recuperar las TipoEmpleado.' });
   }
 };
 
@@ -55,4 +63,5 @@ module.exports = {
   findTipoEmpleadoById,
   updateTipoEmpleado,
   deleteTipoEmpleado,
+  findAll
 };

@@ -7,9 +7,6 @@ const router = Router();
 // Ruta para buscar un centro de costo por código
 router.get('/centrocosto/:codigo', validarJWT, centroCostoController.findById);
 
-// Ruta para buscar todos los centros de costo de una empresa
-router.get('/centroscosto/empresa/:empresasId', validarJWT, centroCostoController.findAllByEmpresa);
-
 // Ruta para buscar todos los centros de costo
 router.get('/centroscosto', validarJWT, centroCostoController.findAll);
 

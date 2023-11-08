@@ -25,6 +25,16 @@ const findAll = async (req, res) => {
   }
 };
 
+const findHistorial = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const s = await SalarioDetalle.findAll({ where: { empleadoId: id } });
+    res.status(200).json(s);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al buscar los salarios' });
+  }
+};
 const create = async (req, res) => {
   try {
     const { fecha, monto, observacion, activo, empleadoId } = req.body;
@@ -75,4 +85,5 @@ module.exports = {
   create,
   update,
   deleteSalarioDetalle,
+  findHistorial
 };
