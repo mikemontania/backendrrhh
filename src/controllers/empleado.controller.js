@@ -47,8 +47,7 @@ const findById = async (req, res) => {
       ],
     });
 
-    if (empleado) {
-      console.log(empleado)
+    if (empleado) { 
       res.status(200).json(empleado);
     } else {
       res.status(404).json({ error: 'Empleado no encontrado' });
