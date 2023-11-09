@@ -6,6 +6,7 @@ const sequelize = new Sequelize(process.env.DB_CNN, {
         encrypt: false,
         options: {
             useUTC: false, // for reading from database
+
         },
     },
     // timezone: process.env.USER_TIMEZONE,

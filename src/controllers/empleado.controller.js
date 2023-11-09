@@ -19,7 +19,8 @@ const Sucursal = require('../models/sucursal.model');
 const { sequelize } = require('../../dbconfig');
 const { response } = require('express');
 const Turno = require('../models/turno.model');
-
+const SalarioDetalle = require('../models/salarioDetalle.model');
+const HonorariosProfesionales = require('../models/honorarioProfesional.model');
 // Método para buscar un empleado por ID
 const findById = async (req, res) => {
   try {
@@ -47,7 +48,7 @@ const findById = async (req, res) => {
       ],
     });
 
-    if (empleado) { 
+    if (empleado) {
       res.status(200).json(empleado);
     } else {
       res.status(404).json({ error: 'Empleado no encontrado' });
@@ -123,8 +124,57 @@ const findAllConcat = async (req, res = response) => {
 // Método para crear un nuevo empleado
 const create = async (req, res) => {
   try {
-    const { legajo, nroTarjeta, fechaIngreso, salarioActual, ...otrosCampos } = req.body;
-    const empleado = await Empleado.create({ legajo, nroTarjeta, fechaIngreso, salarioActual, ...otrosCampos });
+    req.body.empresasId = req.user.empresaId;
+    const { salariosDetalle, honorariosProfesionales } = req.body;
+
+    // Crear el nuevo registro en la tabla `empleados`.
+    const empleado = await Empleado.create(req.body);
+
+    // Si la operación fue exitosa, ejecutar el trigger `InsertaLegajo `.
+    if (empleado) {
+      // Ejecutar el trigger `InsertaLegajo `.
+      // La función `execute()` devuelve una promesa que se resuelve cuando el trigger se ha ejecutado.
+      await sequelize.query('EXEC InsertaLegajo  @empleadoId = :empleadoId', {
+        replacements: {
+          empleadoId: empleado.id
+        }
+      });
+    }
+
+    if (salariosDetalle) {
+      salariosDetalle.forEach(async (salario) => {
+        const salarioAux = {
+          id: salario.id | null,
+          fecha: salario.fecha,
+          monto: salario.monto,
+          observacion: salario.observacion,
+          activo: salario.fecha,
+          empleadoId: empleado.id
+        }
+        if (salarioAux.id) {
+          SalarioDetalle.update(salarioAux);
+        } else {
+          SalarioDetalle.create(salarioAux)
+        }
+      });
+    }
+    if (honorariosProfesionales) {
+      honorariosProfesionales.forEach(async (honorario) => {
+        const honorarioAux = {
+          id: honorario.id | null,
+          fecha: honorario.fecha,
+          monto: honorario.monto,
+          observacion: honorario.observacion,
+          activo: salario.fecha,
+          empleadoId: empleado.id
+        }
+        if (honorarioAux.id) {
+          HonorariosProfesionales.update(honorarioAux);
+        } else {
+          HonorariosProfesionales.create(honorarioAux)
+        }
+      });
+    }
     res.status(201).json(empleado);
   } catch (error) {
     console.error(error);
@@ -136,10 +186,50 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { legajo, nroTarjeta, fechaIngreso, salarioActual, ...otrosCampos } = req.body;
+    req.body.empresasId = req.user.empresaId;
+    const { salariosDetalle, honorariosProfesionales } = req.body;
     const empleado = await Empleado.findByPk(id);
     if (empleado) {
-      await empleado.update({ legajo, nroTarjeta, fechaIngreso, salarioActual, ...otrosCampos });
+      await empleado.update(req.body);
+
+      if (salariosDetalle) {
+        salariosDetalle.forEach(async (salario) => {
+          const salarioAux = {
+            id: salario.id | null,
+            fecha: salario.fecha,
+            monto: salario.monto,
+            observacion: salario.observacion,
+            activo: salario.fecha,
+            empleadoId: empleado.id
+          }
+          if (salarioAux.id) {
+            SalarioDetalle.update(salarioAux);
+          } else {
+            SalarioDetalle.create(salarioAux)
+          }
+        });
+      }
+      if (honorariosProfesionales) {
+        honorariosProfesionales.forEach(async (honorario) => {
+          const honorarioAux = {
+            id: honorario.id | null,
+            fecha: honorario.fecha,
+            monto: honorario.monto,
+            observacion: honorario.observacion,
+            activo: honorario.fecha,
+            empleadoId: empleado.id
+          }
+          if (honorarioAux.id) {
+            HonorariosProfesionales.update(honorarioAux);
+          } else {
+            HonorariosProfesionales.create(honorarioAux)
+          }
+        });
+      }
+
+
+
+
       res.status(200).json(empleado);
     } else {
       res.status(404).json({ error: 'Empleado no encontrado' });
