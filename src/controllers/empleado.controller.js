@@ -127,13 +127,13 @@ const create = async (req, res) => {
     req.body.empresasId = req.user.empresaId;
     const { salariosDetalle, honorariosProfesionales } = req.body;
 
-    const ultimoEmpleado = await Empleado.findOne({ attributes: ['id'], order: [['id', 'Desc']] })
-    const nextID = ultimoEmpleado ? ultimoEmpleado.id + 1 : 1;
-    req.body.legajo = nextID;
-    req.body.nroTarjeta = 10000000 + nextID;
     // Crear el nuevo registro en la tabla `empleados`.
     console.log(req.body)
-    const empleado = await Empleado.create(req.body);
+    const empleadonuevo = await Empleado.create(req.body);
+ 
+    const legajo = empleadonuevo.id;
+    const nroTarjeta = 10000000 + empleadonuevo.id; 
+     empleadonuevo.update({legajo,nroTarjeta})
 
     if (salariosDetalle) {
       salariosDetalle.forEach(async (salario) => {
@@ -143,7 +143,7 @@ const create = async (req, res) => {
           monto: salario.monto,
           observacion: salario.observacion,
           activo: salario.fecha,
-          empleadoId: empleado.id
+          empleadoId: empleadonuevo.id
         }
         if (salarioAux.id) {
           SalarioDetalle.update(salarioAux);
@@ -159,8 +159,8 @@ const create = async (req, res) => {
           fecha: honorario.fecha,
           monto: honorario.monto,
           observacion: honorario.observacion,
-          activo: salario.fecha,
-          empleadoId: empleado.id
+          activo: honorario.fecha,
+          empleadoId: empleadonuevo.id
         }
         if (honorarioAux.id) {
           HonorariosProfesionales.update(honorarioAux);
@@ -170,7 +170,7 @@ const create = async (req, res) => {
       });
     }
 
-    res.status(201).json(empleado);
+    res.status(201).json(empleadonuevo);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear el empleado' });
