@@ -127,19 +127,13 @@ const create = async (req, res) => {
     req.body.empresasId = req.user.empresaId;
     const { salariosDetalle, honorariosProfesionales } = req.body;
 
+    const ultimoEmpleado = await Empleado.findOne({ attributes: ['id'], order: [['id', 'Desc']] })
+    const nextID = ultimoEmpleado ? ultimoEmpleado.id + 1 : 1;
+    req.body.legajo = nextID;
+    req.body.nroTarjeta = 10000000 + nextID;
     // Crear el nuevo registro en la tabla `empleados`.
+    console.log(req.body)
     const empleado = await Empleado.create(req.body);
-
-    // Si la operación fue exitosa, ejecutar el trigger `InsertaLegajo `.
-    if (empleado) {
-      // Ejecutar el trigger `InsertaLegajo `.
-      // La función `execute()` devuelve una promesa que se resuelve cuando el trigger se ha ejecutado.
-      await sequelize.query('EXEC InsertaLegajo  @empleadoId = :empleadoId', {
-        replacements: {
-          empleadoId: empleado.id
-        }
-      });
-    }
 
     if (salariosDetalle) {
       salariosDetalle.forEach(async (salario) => {
@@ -175,13 +169,13 @@ const create = async (req, res) => {
         }
       });
     }
+
     res.status(201).json(empleado);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear el empleado' });
   }
 };
-
 // Método para actualizar un empleado por ID
 const update = async (req, res) => {
   try {
@@ -226,9 +220,6 @@ const update = async (req, res) => {
           }
         });
       }
-
-
-
 
       res.status(200).json(empleado);
     } else {

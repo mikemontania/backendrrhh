@@ -114,10 +114,6 @@ const Empleado = sequelize.define('Empleado', {
     type: DataTypes.STRING(100),
     allowNull: true,
   },
-  carreraId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
   especializacion: {
     type: DataTypes.BOOLEAN,
     allowNull: true,
