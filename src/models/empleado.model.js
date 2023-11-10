@@ -74,52 +74,27 @@ const Empleado = sequelize.define('Empleado', {
   fechaNacimiento: {
     type: DataTypes.DATE,
     allowNull: true,
-    get() {
-      return moment(this.getDataValue('fechaNacimiento')).format('YYYY-MM-DD HH:mm:ss');
-    },
-    set(value) {
-      this.setDataValue('fechaNacimiento', moment(value).format('YYYY-MM-DD HH:mm:ss'));
-    },
+    
   },
   fechaIngreso: {
     type: DataTypes.DATE,
     allowNull: true,
-    get() {
-      return moment(this.getDataValue('fechaIngreso')).format('YYYY-MM-DD HH:mm:ss');
-    },
-    set(value) {
-      this.setDataValue('fechaIngreso', moment(value).format('YYYY-MM-DD HH:mm:ss'));
-    },
+   
   },
   fechaSalida: {
     type: DataTypes.DATE,
     allowNull: true,
-    get() {
-      return moment(this.getDataValue('fechaSalida')).format('YYYY-MM-DD HH:mm:ss');
-    },
-    set(value) {
-      this.setDataValue('fechaSalida', moment(value).format('YYYY-MM-DD HH:mm:ss'));
-    },
+    
   },
   ingresoIps: {
     type: DataTypes.DATE,
     allowNull: true,
-    get() {
-      return moment(this.getDataValue('ingresoIps')).format('YYYY-MM-DD HH:mm:ss');
-    },
-    set(value) {
-      this.setDataValue('ingresoIps', moment(value).format('YYYY-MM-DD HH:mm:ss'));
-    },
+    
   },
   salidaIps: {
     type: DataTypes.DATE,
     allowNull: true,
-    get() {
-      return moment(this.getDataValue('salidaIps')).format('YYYY-MM-DD HH:mm:ss');
-    },
-    set(value) {
-      this.setDataValue('salidaIps', moment(value).format('YYYY-MM-DD HH:mm:ss'));
-    },
+   
   },
   direccion: {
     type: DataTypes.STRING(200),

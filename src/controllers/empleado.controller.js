@@ -126,48 +126,69 @@ const create = async (req, res) => {
   try {
     req.body.empresasId = req.user.empresaId;
     const { salariosDetalle, honorariosProfesionales } = req.body;
+    if (req.body.fechaSalida === "") {
+      req.body.fechaSalida = null
+
+    }
+    if (req.body.fechaIngreso === "") {
+      req.body.fechaIngreso = null
+    }
+    if (req.body.salidaIps === "") {
+      req.body.salidaIps = null
+    }
+    if (req.body.ingresoIps === "") {
+      req.body.ingresoIps = null
+    }
+    if (req.body.fechaNacimiento === "") {
+      req.body.fechaNacimiento = null
+    }
+   
+
 
     // Crear el nuevo registro en la tabla `empleados`.
     console.log(req.body)
     const empleadonuevo = await Empleado.create(req.body);
- 
+
     const legajo = empleadonuevo.id;
-    const nroTarjeta = 10000000 + empleadonuevo.id; 
-     empleadonuevo.update({legajo,nroTarjeta})
+    const nroTarjeta = 10000000 + empleadonuevo.id;
+    empleadonuevo.update({ legajo, nroTarjeta })
 
     if (salariosDetalle) {
-      salariosDetalle.forEach(async (salario) => {
+      await Promise.all(salariosDetalle.map(async (salario) => {
         const salarioAux = {
-          id: salario.id | null,
+          id: salario.id || null,
           fecha: salario.fecha,
           monto: salario.monto,
           observacion: salario.observacion,
-          activo: salario.fecha,
-          empleadoId: empleadonuevo.id
-        }
+          activo: salario.activo,  // Asegúrate de utilizar la propiedad correcta
+          empleadoId: empleadonuevo.id,
+        };
+    
         if (salarioAux.id) {
-          SalarioDetalle.update(salarioAux);
+          await SalarioDetalle.update(salarioAux, { where: { id: salarioAux.id } });
         } else {
-          SalarioDetalle.create(salarioAux)
+          await SalarioDetalle.create(salarioAux);
         }
-      });
+      }));
     }
+    
     if (honorariosProfesionales) {
-      honorariosProfesionales.forEach(async (honorario) => {
+      await Promise.all(honorariosProfesionales.map(async (honorario) => {
         const honorarioAux = {
-          id: honorario.id | null,
+          id: honorario.id || null,
           fecha: honorario.fecha,
           monto: honorario.monto,
           observacion: honorario.observacion,
-          activo: honorario.fecha,
-          empleadoId: empleadonuevo.id
-        }
+          activo: honorario.activo,  // Asegúrate de utilizar la propiedad correcta
+          empleadoId: empleadonuevo.id,
+        };
+      
         if (honorarioAux.id) {
-          HonorariosProfesionales.update(honorarioAux);
+          HonorariosProfesionales.update(honorarioAux, { where: { id: honorarioAux.id } });
         } else {
           HonorariosProfesionales.create(honorarioAux)
         }
-      });
+      }));
     }
 
     res.status(201).json(empleadonuevo);
