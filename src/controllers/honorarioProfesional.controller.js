@@ -38,20 +38,30 @@ const findHistorial = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { fecha, monto, observacion, activo, empleadoId } = req.body;
-    const honorariosProfesionales = await HonorariosProfesionales.create({
+    const { fecha, monto, observacion, empleadoId } = req.body;
+
+    // Inactivar todos los salarios anteriores del empleado
+    await HonorariosProfesionales.update(
+      { activo: 'N' },
+      { where: { empleadoId, activo: 'S' } }
+    );
+
+    // Crear el nuevo salario
+    const h = await HonorariosProfesionales.create({
       fecha,
       monto,
       observacion,
-      activo,
+      activo: 'S',
       empleadoId,
     });
-    res.status(201).json(honorariosProfesionales);
+
+    res.status(201).json(h);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Error al crear los honorarios profesionales' });
+    res.status(500).json({ error: 'Error al crear el HonorariosProfesionales' });
   }
 };
+
 
 const update = async (req, res) => {
   try {

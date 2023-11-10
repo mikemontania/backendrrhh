@@ -6,10 +6,9 @@ const salarioDetalleController = require('../controllers/salarioDetalle.controll
 
 // Rutas para el controlador de SalarioDetalle
 router.get('/fun/:id', validarJWT, salarioDetalleController.findHistorial);
-router.get('/salarioDetalles', validarJWT, salarioDetalleController.findAll);
-router.get('/salarioDetalles/:id', validarJWT, salarioDetalleController.findById);
-router.post('/salarioDetalles', validarJWT, salarioDetalleController.create);
-router.put('/salarioDetalles/:id', validarJWT, salarioDetalleController.update);
-router.delete('/salarioDetalles/:id', validarJWT, salarioDetalleController.deleteSalarioDetalle);
+router.get('/:id', validarJWT, salarioDetalleController.findById);
+router.post('/', validarJWT, salarioDetalleController.create);
+router.put('/:id', validarJWT, salarioDetalleController.update);
+router.delete('/:id', validarJWT, salarioDetalleController.deleteSalarioDetalle);
 
 module.exports = router;

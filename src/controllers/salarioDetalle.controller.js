@@ -37,14 +37,30 @@ const findHistorial = async (req, res) => {
 };
 const create = async (req, res) => {
   try {
-    const { fecha, monto, observacion, activo, empleadoId } = req.body;
-    const salarioDetalle = await SalarioDetalle.create({ fecha, monto, observacion, activo, empleadoId });
+    const { fecha, monto, observacion, empleadoId } = req.body;
+
+    // Inactivar todos los salarios anteriores del empleado
+    await SalarioDetalle.update(
+      { activo: 'N' },
+      { where: { empleadoId, activo: 'S' } }
+    );
+
+    // Crear el nuevo salario
+    const salarioDetalle = await SalarioDetalle.create({
+      fecha,
+      monto,
+      observacion,
+      activo: 'S',
+      empleadoId,
+    });
+
     res.status(201).json(salarioDetalle);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error al crear el SalarioDetalle' });
   }
 };
+
 
 const update = async (req, res) => {
   try {

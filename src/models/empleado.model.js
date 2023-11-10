@@ -74,27 +74,27 @@ const Empleado = sequelize.define('Empleado', {
   fechaNacimiento: {
     type: DataTypes.DATE,
     allowNull: true,
-    
+
   },
   fechaIngreso: {
     type: DataTypes.DATE,
     allowNull: true,
-   
+
   },
   fechaSalida: {
     type: DataTypes.DATE,
     allowNull: true,
-    
+
   },
   ingresoIps: {
     type: DataTypes.DATE,
     allowNull: true,
-    
+
   },
   salidaIps: {
     type: DataTypes.DATE,
     allowNull: true,
-   
+
   },
   direccion: {
     type: DataTypes.STRING(200),
@@ -378,7 +378,7 @@ Empleado.belongsTo(FrecuenciaPago, {
 });
 
 Empleado.belongsTo(Seleccion, {
-  foreignKey: 'via_seleccion',
+  foreignKey: 'viaSeleccion',
   targetKey: 'id',
   as: 'seleccion',
 });

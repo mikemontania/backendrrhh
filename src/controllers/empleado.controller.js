@@ -119,31 +119,39 @@ const findAllConcat = async (req, res = response) => {
     res.status(500).json({ error: 'Error al buscar empleados' });
   }
 };
+//metodos para descomprimir update y create
+const handleDate = (date) => (date === "" ? null : date);
+const createOrUpdateDetails = async (model, data, empleadoId) => {
+  const formattedData = {
+    id: data.id || null,
+    fecha: handleDate(data.fecha),
+    monto: data.monto,
+    observacion: data.observacion,
+    activo: data.activo,
+    empleadoId,
+  };
 
-
+  try {
+    if (formattedData.id) {
+      await model.update(formattedData, { where: { id: formattedData.id } });
+    } else {
+      await model.create(formattedData);
+    }
+  } catch (error) {
+    console.error(`Error en operación de ${model.name}:`, error);
+  }
+};
 // Método para crear un nuevo empleado
 const create = async (req, res) => {
   try {
-    req.body.empresasId = req.user.empresaId;
     const { salariosDetalle, honorariosProfesionales } = req.body;
-    if (req.body.fechaSalida === "") {
-      req.body.fechaSalida = null
 
-    }
-    if (req.body.fechaIngreso === "") {
-      req.body.fechaIngreso = null
-    }
-    if (req.body.salidaIps === "") {
-      req.body.salidaIps = null
-    }
-    if (req.body.ingresoIps === "") {
-      req.body.ingresoIps = null
-    }
-    if (req.body.fechaNacimiento === "") {
-      req.body.fechaNacimiento = null
-    }
-   
-
+    req.body.empresasId = req.user.empresaId;
+    req.body.fechaIngreso = handleDate(req.body.fechaIngreso)
+    req.body.fechaSalida = handleDate(req.body.fechaSalida)
+    req.body.ingresoIps = handleDate(req.body.ingresoIps)
+    req.body.salidaIps = handleDate(req.body.salidaIps)
+    req.body.fechaNacimiento = handleDate(req.body.fechaNacimiento)
 
     // Crear el nuevo registro en la tabla `empleados`.
     console.log(req.body)
@@ -154,43 +162,12 @@ const create = async (req, res) => {
     empleadonuevo.update({ legajo, nroTarjeta })
 
     if (salariosDetalle) {
-      await Promise.all(salariosDetalle.map(async (salario) => {
-        const salarioAux = {
-          id: salario.id || null,
-          fecha: salario.fecha,
-          monto: salario.monto,
-          observacion: salario.observacion,
-          activo: salario.activo,  // Asegúrate de utilizar la propiedad correcta
-          empleadoId: empleadonuevo.id,
-        };
-    
-        if (salarioAux.id) {
-          await SalarioDetalle.update(salarioAux, { where: { id: salarioAux.id } });
-        } else {
-          await SalarioDetalle.create(salarioAux);
-        }
-      }));
-    }
-    
-    if (honorariosProfesionales) {
-      await Promise.all(honorariosProfesionales.map(async (honorario) => {
-        const honorarioAux = {
-          id: honorario.id || null,
-          fecha: honorario.fecha,
-          monto: honorario.monto,
-          observacion: honorario.observacion,
-          activo: honorario.activo,  // Asegúrate de utilizar la propiedad correcta
-          empleadoId: empleadonuevo.id,
-        };
-      
-        if (honorarioAux.id) {
-          HonorariosProfesionales.update(honorarioAux, { where: { id: honorarioAux.id } });
-        } else {
-          HonorariosProfesionales.create(honorarioAux)
-        }
-      }));
+      await Promise.all(salariosDetalle.map((salario) => createOrUpdateDetails(SalarioDetalle, salario, empleadonuevo.id)));
     }
 
+    if (honorariosProfesionales) {
+      await Promise.all(honorariosProfesionales.map((honorario) => createOrUpdateDetails(HonorariosProfesionales, honorario, empleadonuevo.id)));
+    }
     res.status(201).json(empleadonuevo);
   } catch (error) {
     console.error(error);
@@ -201,45 +178,24 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   try {
     const { id } = req.params;
-    req.body.empresasId = req.user.empresaId;
     const { salariosDetalle, honorariosProfesionales } = req.body;
+
+    req.body.empresasId = req.user.empresaId;
+    req.body.fechaIngreso = handleDate(req.body.fechaIngreso)
+    req.body.fechaSalida = handleDate(req.body.fechaSalida)
+    req.body.ingresoIps = handleDate(req.body.ingresoIps)
+    req.body.salidaIps = handleDate(req.body.salidaIps)
+    req.body.fechaNacimiento = handleDate(req.body.fechaNacimiento)
     const empleado = await Empleado.findByPk(id);
     if (empleado) {
       await empleado.update(req.body);
 
       if (salariosDetalle) {
-        salariosDetalle.forEach(async (salario) => {
-          const salarioAux = {
-            id: salario.id | null,
-            fecha: salario.fecha,
-            monto: salario.monto,
-            observacion: salario.observacion,
-            activo: salario.fecha,
-            empleadoId: empleado.id
-          }
-          if (salarioAux.id) {
-            SalarioDetalle.update(salarioAux);
-          } else {
-            SalarioDetalle.create(salarioAux)
-          }
-        });
+        await Promise.all(salariosDetalle.map((salario) => createOrUpdateDetails(SalarioDetalle, salario, empleado.id)));
       }
+
       if (honorariosProfesionales) {
-        honorariosProfesionales.forEach(async (honorario) => {
-          const honorarioAux = {
-            id: honorario.id | null,
-            fecha: honorario.fecha,
-            monto: honorario.monto,
-            observacion: honorario.observacion,
-            activo: honorario.fecha,
-            empleadoId: empleado.id
-          }
-          if (honorarioAux.id) {
-            HonorariosProfesionales.update(honorarioAux);
-          } else {
-            HonorariosProfesionales.create(honorarioAux)
-          }
-        });
+        await Promise.all(honorariosProfesionales.map((honorario) => createOrUpdateDetails(HonorariosProfesionales, honorario, empleado.id)));
       }
 
       res.status(200).json(empleado);

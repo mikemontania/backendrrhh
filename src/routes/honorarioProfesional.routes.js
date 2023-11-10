@@ -9,7 +9,7 @@ router.get('/fun/:id', validarJWT, honorariosProfesionalesController.findHistori
 router.get('/honorariosprofesionales', validarJWT, honorariosProfesionalesController.findAll);
 
 // Ruta para crear un nuevo honorario profesional
-router.post('/honorariosprofesionales', validarJWT, honorariosProfesionalesController.create);
+router.post('/', validarJWT, honorariosProfesionalesController.create);
 
 // Agregar rutas para otros controladores según tus necesidades
 
